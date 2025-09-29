@@ -1,4 +1,4 @@
-resource "aws_launch_template" "demo_launch_template" {
+resource "aws_launch_template" "eks_demo_launch_template" {
   name          = "demo_launch_template"
   key_name      = "dpp-key"
   instance_type = "t2.medium"
