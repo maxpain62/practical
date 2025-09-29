@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: readiness-httpget-pod
+  labels:
+    app: readiness-httpget-pod-app
+spec:
+  containers:
+    - name: readiness-httpget-pod-container
+      image: nginx
+      readinessProbe:
+        httpGet:
+          path: /
+          port: 80
+        failureThreshold: 5
+        initialDelaySeconds: 10
+        periodSeconds: 10
+      ports:
+        - containerPort: 80
+          protocol: TCP
