@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: basic-deployment-service
+  labels:
+    tier: basic-deployment-frontend
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      protocol: TCP
+  selector:
+    tier: basic-deployment-frontend
