@@ -1,5 +1,5 @@
 resource "aws_launch_template" "eks_demo_launch_template" {
-  name          = "demo_launch_template"
+  name          = "eks_demo_launch_template"
   key_name      = "dpp-key"
   instance_type = "t2.medium"
   #image_id      = "ami-02d26659fd82cf299"
