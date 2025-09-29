@@ -10,8 +10,11 @@ data:
     [default]
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     enter access key id here
     enter secret access key here
+=======
+>>>>>>> 1004c2ebae019e919c38c3c42c124f42aa1e84ac
   sync.sh: |
     aws s3 sync /var/log/nginx s3://catalog-03082025
 ---
