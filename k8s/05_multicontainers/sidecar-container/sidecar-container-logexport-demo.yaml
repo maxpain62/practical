@@ -9,6 +9,7 @@ data:
   credentials: |
     [default]
 <<<<<<< HEAD
+<<<<<<< HEAD
     enter access key id here
     enter secret access key here
   sync.sh: |
