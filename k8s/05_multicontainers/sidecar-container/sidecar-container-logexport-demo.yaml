@@ -8,6 +8,7 @@ data:
     region = ap-south-1
   credentials: |
     [default]
+<<<<<<< HEAD
     enter access key id here
     enter secret access key here
   sync.sh: |
