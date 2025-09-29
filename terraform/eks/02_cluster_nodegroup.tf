@@ -57,7 +57,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   subnet_ids      = var.subnet_id
   
    launch_template {
-    id      = aws_launch_template.demo_launch_template.id
+    id      = aws_launch_template.eks_demo_launch_template.id
     version = "$Default"
   }
 
