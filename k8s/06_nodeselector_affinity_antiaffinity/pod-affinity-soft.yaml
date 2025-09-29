@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-affinity-soft-deployment-2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mysql
+      tier: database
+  template:
+    metadata:
+      name: pod-affinity-soft-pod-2
+      labels:
+        app: mysql
+        tier: database
+    spec:
+      containers:
+        - name: pod-affinity-soft-container-2
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - sleep 3600s
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-affinity-soft-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: pod-affinity-soft-container
+      labels:
+        app: nginx
+    spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchExpressions:
+                    - key: tier
+                      operator: In
+                      values:
+                        - backend
+                        - database
+      containers:
+        - name: pod-affinity-soft-container
+          image: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
