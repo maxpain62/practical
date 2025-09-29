@@ -8,8 +8,13 @@ data:
     region = ap-south-1
   credentials: |
     [default]
+<<<<<<< HEAD
     enter access key id here
     enter secret access key here
+=======
+    <add access key id>
+    <add secret access key>
+>>>>>>> 131aa71 (first commit)
   sync.sh: |
     aws s3 sync /var/log/nginx s3://catalog-03082025
 ---
