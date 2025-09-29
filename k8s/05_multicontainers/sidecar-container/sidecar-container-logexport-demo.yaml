@@ -8,8 +8,6 @@ data:
     region = ap-south-1
   credentials: |
     [default]
-    <add acc key id>
-    <add scrt acc key>
   sync.sh: |
     aws s3 sync /var/log/nginx s3://catalog-03082025
 ---
