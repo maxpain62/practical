@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-antiaffinity-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mysql2
+      tier: database2
+  template:
+    metadata:
+      name: pod-antiaffinity-pod
+      labels:
+        app: mysql2
+        tier: database2
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: mysql2
+                  tier: database2
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: pod-antiaffinity-container
+          image: busybox
+          command: ["sleep", "3600s"]
