@@ -51,7 +51,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_role_policy_attachment"
   depends_on = [ aws_iam_role.eks_nodegroup_role ]
 }
 
-#Below reqource entries will give access to user eos_admin with AmazonEKSClusterAdminPolicy to cluster
+#Below reqource entries will give access to user with AmazonEKSClusterAdminPolicy to cluster
 resource "aws_eks_access_entry" "eks_access_entry" {
   cluster_name      = aws_eks_cluster.demo_cluster.name
   principal_arn     = "arn:aws:iam::134448505602:user/aws-cli"
