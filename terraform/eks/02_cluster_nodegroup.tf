@@ -85,14 +85,14 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   ]
 }
 
-/*resource "aws_eks_node_group" "demo_nodegroup_slow" {
+resource "aws_eks_node_group" "demo_nodegroup_rseries" {
   cluster_name    = aws_eks_cluster.demo_cluster.name
-  node_group_name = "demo_nodegroup_slow"
+  node_group_name = "demo_nodegroup_rseries"
   node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
   ami_type        = "AL2023_x86_64_STANDARD"
   capacity_type   = "SPOT"
   disk_size       = 20
-  instance_types  = ["t3.medium"]
+  instance_types  = ["t3a.medium"]
   subnet_ids      = var.subnet_id
 
   scaling_config {
@@ -105,7 +105,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   }
 
   labels = {
-    speed = "slow"
+    instancetype = "rseries"
   }
   tags = {
     env = "dev"
@@ -117,7 +117,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
     aws_iam_role_policy_attachment.eks_nodegroup_role_policy_attachment
   ]
 }
-*/
+
 output "cluster_name" {
   value = "aws eks update-kubeconfig --name ${aws_eks_cluster.demo_cluster.name}"
 }
