@@ -52,17 +52,17 @@ resource "aws_iam_role_policy_attachment" "eks_nodegroup_role_policy_attachment"
 }
 
 #Below reqource entries will give access to user eos_admin with AmazonEKSClusterAdminPolicy to cluster
-#resource "aws_eks_access_entry" "example" {
-#  cluster_name      = aws_eks_cluster.demo_cluster.name
-#  principal_arn     = "arn:aws:iam::134448505602:user/eos_admin"
-#  type              = "STANDARD"
-#}
+resource "aws_eks_access_entry" "eks_access_entry" {
+  cluster_name      = aws_eks_cluster.demo_cluster.name
+  principal_arn     = "arn:aws:iam::134448505602:user/aws-cli"
+  type              = "STANDARD"
+}
 
-#resource "aws_eks_access_policy_association" "example" {
-#  cluster_name  = aws_eks_cluster.demo_cluster.name
-#  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-#  principal_arn = "arn:aws:iam::134448505602:user/eos_admin"
-#  access_scope {
-#    type       = "cluster"
-#  }
-#}
+resource "aws_eks_access_policy_association" "eks_access_policy_association" {
+  cluster_name  = aws_eks_cluster.demo_cluster.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = "arn:aws:iam::134448505602:user/aws-cli"
+  access_scope {
+    type       = "cluster"
+  }
+}
