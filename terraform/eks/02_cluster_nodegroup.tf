@@ -72,6 +72,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
 
   labels = {
     speed = "fast"
+    instancetype = "mseries"
   }
   tags = {
     env = "dev"
