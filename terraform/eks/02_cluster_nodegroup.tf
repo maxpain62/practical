@@ -74,6 +74,9 @@ resource "aws_eks_node_group" "demo_nodegroup" {
     speed = "fast"
     instancetype = "mseries"
   }
+
+
+
   tags = {
     env = "dev"
     speed = "fast"
@@ -85,7 +88,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   ]
 }
 
-/*resource "aws_eks_node_group" "demo_nodegroup_rseries" {
+resource "aws_eks_node_group" "demo_nodegroup_rseries" {
   cluster_name    = aws_eks_cluster.demo_cluster.name
   node_group_name = "demo_nodegroup_rseries"
   node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
@@ -107,6 +110,11 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   labels = {
     instancetype = "rseries"
   }
+  taint {
+    key = "testkey"
+    value = "testvalue"
+    effect = "NO_SCHEDULE"
+  }
   tags = {
     env = "dev"
     speed = "slow"
@@ -116,7 +124,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
     aws_eks_cluster.demo_cluster,
     aws_iam_role_policy_attachment.eks_nodegroup_role_policy_attachment
   ]
-}*/
+}
 
 output "cluster_name" {
   value = "aws eks update-kubeconfig --name ${aws_eks_cluster.demo_cluster.name}"
