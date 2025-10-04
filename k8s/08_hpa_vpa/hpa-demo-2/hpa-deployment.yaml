@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hpa-demo-configmap-2
+data:
+  index.html: |
+    OK!
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpa-demo-service-2
+spec:
+  ports:
+    - port: 80
+  selector:
+    app: nginx
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpa-demo-deployment-2
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: hpa-demo-pod-2
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: hpa-demo-container-2
+          image: nginx
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: hpa-demo-volume-2
+              mountPath: /usr/share/nginx/html/
+          resources:
+            requests:
+              cpu: "10m"
+              memory: 10Mi
+            limits: 
+              cpu: "15m"
+              memory: 15Mi
+      volumes:
+        - name: hpa-demo-volume-2
+          configMap:
+            name: hpa-demo-configmap-2

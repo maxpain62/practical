@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: service-test-pod
+spec:
+  containers:
+    - name: service-test-container
+      image: curlimages/curl
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "while true; do curl -s http://hpa-demo-service.default.svc.cluster.local; done",
+        ]
