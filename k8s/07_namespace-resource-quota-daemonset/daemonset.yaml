@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-demo
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: busybox
+  template:
+    metadata:
+      name: daemonset-demo-pod
+      labels:
+        app: busybox
+    spec:
+      containers:
+        - name: daemonset-demo-container
+          image: busybox
+          command: ["/bin/sh", "-c", "sleep 3600s"]
