@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: request-limit-demo-deployment
+  namespace: namespace-demo
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: stress
+      environment: test
+  template:
+    metadata:
+      name: request-limit-demo-pod
+      labels:
+        app: stress
+        environment: test
+    spec:
+      containers:
+        - name: request-limit-demo-container
+          image: containerstack/alpine-stress
+          command: ["/bin/sh", "-c", "stress -c 500 --timeout 3600s"]
+          resources:
+            requests:
+              cpu: "250m"
+              memory: 250M
+            limits:
+              cpu: "500m"
+              memory: "500M"
