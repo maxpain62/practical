@@ -1,0 +1,69 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nwpolicy-deny-all-ingress
+spec:
+  policyTypes:
+    - Ingress
+  podSelector: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: source-pod
+  labels:
+    app: source-app
+spec:
+  initContainers:
+    - name: source-init-container
+      image: curlimages/curl
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "until curl http://destination-service; do echo 'trying to access destination-service' >> /tmp/log/output.txt 2>&1 ; sleep 5s; done",
+        ]
+      volumeMounts:
+        - name: service-accessibility-log
+          mountPath: /tmp/log/
+  containers:
+    - name: source-container
+      image: curlimages/curl
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "while curl http://destination-service; do echo 'destination-service accessible' >> /tmp/log/output.txt 2>&1; sleep 5s; done",
+        ]
+      volumeMounts:
+        - name: service-accessibility-log
+          mountPath: /tmp/log/
+  volumes:
+    - name: service-accessibility-log
+      emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: destination-service
+spec:
+  type: ClusterIP
+  selector:
+    app: destination-app
+  ports:
+    - port: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: destination-pod
+  labels:
+    app: destination-app
+spec:
+  containers:
+    - name: destination-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          protocol: TCP

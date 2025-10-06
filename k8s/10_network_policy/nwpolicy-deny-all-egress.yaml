@@ -1,0 +1,73 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: denyall
+spec:
+  policyTypes:
+    - Egress
+  podSelector: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: source-pod
+  labels:
+    app: source-app
+spec:
+  initContainers:
+    - name: source-init-container
+      image: curlimages/curl
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "until curl http://destination-service; do echo 'trying to access pod'; sleep 10s; done",
+        ]
+  containers:
+    - name: source-container
+      image: curlimages/curl
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "while curl http://destination-service; do echo 'pod is accessible' >> /output.txt; sleep 10s; done",
+        ]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: destination-service
+  labels:
+    app: destination-app
+spec:
+  selector:
+    app: destination-app
+  ports:
+    - port: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: destination-pod
+  labels:
+    app: destination-app
+spec:
+  containers:
+    - name: destination-container
+      image: nginx
+      ports:
+        - containerPort: 80
+          protocol: TCP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu-ping
+  labels:
+    app: ubuntu-ping-app
+spec:
+  containers:
+    - name: ubuntu-ping-container
+      image: ubuntu
+      command: ["/bin/sh", "-c", "sleep 3600s"]
