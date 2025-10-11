@@ -1,0 +1,44 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: dynamic-provisioning-storage-class
+volumeBindingMode: Immediate
+reclaimPolicy: Delete
+provisioner: ebs.csi.aws.com
+parameters:
+  csi.storage.k8s.io/fstype: ext4
+  type: gp3
+  tagSpecification_1: "env=dev"
+  tagSpecification_2: "Name=eks_vol"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dynamic-provisioning-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: dynamic-provisioning-storage-class
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dynamic-provisioning-pod
+spec:
+  containers:
+    - name: dynamic-provisioning-container
+      image: ubuntu
+      command: ["/bin/sh"]
+      args:
+        - -c
+        - while true; do echo $(date -u) >> /data/out.txt; sleep 1s; done
+      volumeMounts:
+        - name: dynamic-provisioning-volume
+          mountPath: /data
+  volumes:
+    - name: dynamic-provisioning-volume
+      persistentVolumeClaim:
+        claimName: dynamic-provisioning-pvc
