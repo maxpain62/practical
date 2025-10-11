@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simple-statefulset-service
+spec:
+  ports:
+    - port: 80
+  clusterIP: None
+  selector:
+    app: nginx
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: simple-statefulset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: simple-statefulset-pod
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: simple-statefulset-container
+          image: nginx
+          ports:
+            - containerPort: 80
