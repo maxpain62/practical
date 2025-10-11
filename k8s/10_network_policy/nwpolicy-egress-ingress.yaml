@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nwpolicy-namespace-egress-ingress
+spec:
+  policyTypes:
+    - Ingress
+    - Egress
+  podSelector:
+    #this policy will be applied on pods where value of label app is mysql, nginx, node
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - mysql
+          - nginx
+          - node
+  egress:
+    - to:
+        - podSelector:
+            matchExpressions:
+              - key: tier
+                operator: In
+                values:
+                  - frontend
+                  - backend
+                  - database
+              - key: team
+                operator: In
+                values:
+                  - order
+                  - user
+  ingress:
+    - from:
+        - podSelector:
+            matchExpressions:
+              - key: tier
+                operator: In
+                values:
+                  - frontend
+                  - backend
+                  - database
+              - key: team
+                operator: In
+                values:
+                  - order
+                  - user
