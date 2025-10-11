@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-volume-claim-demo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeName: persistent-volume-demo
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: persistent-volume-claim-demo-2
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeName: persistent-volume-demo-2
+  resources:
+    requests:
+      storage: 1Gi
