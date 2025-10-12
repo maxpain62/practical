@@ -1,4 +1,4 @@
-# How to grant access to aws IAM user to EKS
+# How to grant EKS cluster access to aws IAM user
 
 ### Step 1 - Execute below command:-
 
