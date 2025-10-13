@@ -37,7 +37,7 @@ metadata:
 
 #### Note - we need to change some values in above yaml code
 
-1. <Account ID> replace this with your AWS account ID
+1. Account ID replace this with your AWS account ID
 2. john-devops replace this value with IAM user name which you have created in AWS IAM console
 3. Save and close text editor
 

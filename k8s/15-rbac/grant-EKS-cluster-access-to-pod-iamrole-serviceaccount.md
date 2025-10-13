@@ -1,4 +1,4 @@
-# How to grant EKS cluster access to aws IAM user
+# How to grant EKS cluster access to Pod aws IAM user
 
 ### Prerequisits
 
