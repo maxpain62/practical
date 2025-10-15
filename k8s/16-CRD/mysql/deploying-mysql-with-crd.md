@@ -30,6 +30,7 @@ replicaset.apps/mysql-operator-9bf5fd568   1         1         1       15m
 ### Step 2 - Installing MySQL InnoDB Cluster
 
 - Create storage class with below yaml code
+- Note - annotation _**storageclass.kubernetes.io/is-default-class: "true"**_ means we are telling kubetnetes that this is default storage class
 
 ```
 apiVersion: storage.k8s.io/v1
