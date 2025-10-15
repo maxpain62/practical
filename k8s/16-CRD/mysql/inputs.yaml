@@ -1,0 +1,11 @@
+credentials:
+  root:
+    user: root
+    password: sakila
+    host: "%"
+datadirVolumeClaimTemplate:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
