@@ -4,8 +4,7 @@ credentials:
     password: sakila
     host: "%"
 datadirVolumeClaimTemplate:
-  accessModes:
-    - ReadWriteOnce
+  accessModes: "ReadWriteOnce"
   resources:
     requests:
       storage: 10Gi
