@@ -1,4 +1,4 @@
-# How to grant EKS cluster access to Pod aws IAM user
+# How to Grant EKS Pods Access to AWS Services Using IAM Roles for Service Accounts (IRSA)
 
 ### Prerequisits
 
