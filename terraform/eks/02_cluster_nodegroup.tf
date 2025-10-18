@@ -19,7 +19,7 @@ resource "aws_launch_template" "eks_demo_launch_template" {
 }
 
 resource "aws_eks_cluster" "demo_cluster" {
-  name     = "demo_cluster"
+  name     = "demo-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
   version  = "1.32"
 
