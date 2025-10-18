@@ -14,7 +14,8 @@
    - In key dropdown select OIDC provider
    - Condition - StringEquals
    - Value - _**system:serviceaccount:default:ServiceAccountName**_
-   - Replace ServiceAccountName with name of service account you will create inside eks cluster with yaml file
+   - Replace _**default**_ with desired namespace name in which you are creating the pod/deployment
+   - Replace _**ServiceAccountName**_ with name of service account you will create inside eks cluster with yaml file
 5. Select policy you want to attach to your role. click next
 6. Provide role name and click on create role.
 
@@ -34,7 +35,7 @@ metadata:
 Note:
 
 1. Replace **_Account ID_** with your AWS account id
-2. Replace **_ServiceAccountRoleName_** with
+2. Replace **_ServiceAccountRoleName_** with role you have created in aws iam console
 
 ### Step 3 - Create pod and associate with service account created in **step 2**
 
