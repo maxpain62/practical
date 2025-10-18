@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: revision-config-map
+  namespace: revision-namespace
+  labels:
+    app: web
+    tier: frontend
+data:
+  index.html: |
+    OK!!!
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: revision-config-map-2
+  namespace: revision-namespace
+  labels:
+    app: web
+    tier: frontend
+data:
+  sync.sh: |
+    aws s3 sync /var/log/nginx s3://catalog-03082025
+  config: |
+    [default]
+    region = ap-south-1
+  db-server-ip: "172.31.15.144"
+  db-server-port: "3306"

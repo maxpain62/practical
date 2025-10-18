@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: revision-resourcequota
+  namespace: revision-namespace
+spec:
+  hard:
+    limits.cpu: "700m"
+    limits.memory: 512Mi

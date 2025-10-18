@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: revision-namespace
+  labels:
+    app: web
+    tier: frontend

@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: revision-deployment
+  namespace: revision-namespace
+  labels:
+    app: web
+    tier: frontend
+spec:
+  selector:
+    matchLabels:
+      app: web
+      tier: frontend
+  template:
+    metadata:
+      name: revision-pod
+      labels:
+        app: web
+        tier: frontend
+    spec:
+      serviceAccountName: service-account-with-iam-role
+      initContainers:
+        - name: revision-initcontainer
+          image: maxpain62/alpine:netcat
+          command:
+            - /bin/sh
+            - -c
+            - until nc -zv $db_server_ip $db_server_port; do echo 'connecting to db server'; sleep 5s; done
+          resources:
+            requests:
+              cpu: "10m"
+              memory: 16Mi
+            limits:
+              cpu: "15m"
+              memory: 24Mi
+          env:
+            - name: db_server_ip
+              valueFrom:
+                configMapKeyRef:
+                  name: revision-config-map-2
+                  key: db-server-ip
+            - name: db_server_port
+              valueFrom:
+                configMapKeyRef:
+                  name: revision-config-map-2
+                  key: db-server-port
+      containers:
+        - name: revision-container
+          image: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            periodSeconds: 10
+            initialDelaySeconds: 10
+            httpGet:
+              path: /
+              port: 80
+          livenessProbe:
+            failureThreshold: 5
+            periodSeconds: 10
+            initialDelaySeconds: 10
+            httpGet:
+              path: /
+              port: 80
+          volumeMounts:
+            - name: revision-volume
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: index.html
+            - name: revision-volume-3
+              mountPath: /var/log/nginx
+          resources:
+            requests:
+              cpu: "50m"
+              memory: 64Mi
+            limits:
+              cpu: "75m"
+              memory: 96Mi
+        - name: revision-sidecar-container
+          image: maxpain62/ubuntu-24.04:awscli-1.42.37
+          command:
+            - /bin/sh
+            - -c
+            #- cp /tmp/sync.sh /root/sync.sh; chmod 777 /root/sync.sh; while true; do bash /root/sync.sh; sleep 10s; done
+            - while true; do bash /root/sync.sh; sleep 10s; done
+          volumeMounts:
+            - name: revision-volume-2
+              #mountPath: /tmp/sync.sh
+              mountPath: /root/sync.sh
+              subPath: sync.sh
+            - name: revision-volume-2
+              mountPath: /root/.aws/config
+              subPath: config
+            - name: revision-volume-3
+              mountPath: /var/log/nginx
+          resources:
+            requests:
+              cpu: "25m"
+              memory: 32Mi
+            limits:
+              cpu: "35m"
+              memory: 48Mi
+      volumes:
+        - name: revision-volume
+          configMap:
+            name: revision-config-map
+        - name: revision-volume-2
+          configMap:
+            name: revision-config-map-2
+            defaultMode: 0777
+        - name: revision-volume-3
+          emptyDir: {}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: web
+                    tier: frontend
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    tier: backend
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              preference:
+                matchExpressions:
+                  - key: speed
+                    operator: In
+                    values:
+                      - fast
