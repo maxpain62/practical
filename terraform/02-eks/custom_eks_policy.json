@@ -1,0 +1,61 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Statement1",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*",
+        "eks:*",
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:ListAllMyBuckets",
+        "s3:ListBucket",
+        "s3:DeleteObject",
+        "s3:DeleteObjectVersion"
+      ],
+      "Resource": ["*"],
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:RequestedRegion": "ap-south-1"
+        }
+      }
+    },
+    {
+      "Sid": "Statement2",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetOpenIDConnectProvider",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:GetRole",
+        "iam:GetRolePolicy",
+        "iam:ListOpenIDConnectProviders",
+        "iam:ListPolicies",
+        "iam:ListPolicyVersions",
+        "iam:ListRoles",
+        "iam:ListRolePolicies",
+        "iam:ListAttachedRolePolicies",
+        "iam:ListInstanceProfilesForRole",
+        "iam:CreateRole",
+        "iam:CreatePolicy",
+        "iam:CreatePolicyVersion",
+        "iam:CreateOpenIDConnectProvider",
+        "iam:DeleteRolePolicy",
+        "iam:DeletePolicyVersion",
+        "iam:DeletePolicy",
+        "iam:DeleteUserPolicy",
+        "iam:DeleteRole",
+        "iam:DeleteOpenIDConnectProvider",
+        "iam:UpdateAssumeRolePolicy",
+        "iam:PassRole",
+        "iam:AttachRolePolicy",
+        "iam:DetachUserPolicy",
+        "iam:DetachRolePolicy",
+        "iam:TagPolicy",
+        "iam:TagRole"
+      ],
+      "Resource": ["*"]
+    }
+  ]
+}
