@@ -127,5 +127,5 @@ resource "aws_eks_node_group" "demo_nodegroup" {
 }*/
 
 output "cluster_name" {
-  value = "aws eks update-kubeconfig --name ${aws_eks_cluster.demo_cluster.name}"
+  value = "aws eks update-kubeconfig --name ${aws_eks_cluster.demo_cluster.name} --region ap-south-1" 
 }
