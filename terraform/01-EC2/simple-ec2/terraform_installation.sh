@@ -6,6 +6,11 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashi
 apt update; sudo apt-get install terraform -y
 
 cd ~; git clone https://github.com/maxpain62/practical.git
+EksDir=/root/practical/terraform/02-eks
+if [ -d $EksDir ];
+then
+    cd $EksDir && terraform init && terraform apply --auto-approve
+fi
 
 ln -s /usr/bin/python3 /usr/bin/python
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
@@ -16,12 +21,6 @@ curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.9/2025-09-19/bin/linu
 chmod +x /root/kubectl
 cp -p /root/kubectl /usr/local/bin/
 
-EksDir=/root/practical/terraform/02-eks
-
-if [ -d $EksDir ];
-then
-    cd $EksDir && terraform init && terraform apply --auto-approve
-fi
 
 rm -rf /root/awscli-bundle
 rm -rf /root/awscli-bundle.zip
