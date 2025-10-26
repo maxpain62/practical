@@ -14,12 +14,12 @@ ln -s /usr/bin/python3 /usr/bin/python
 
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
-sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+sudo /root/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
 curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.9/2025-09-19/bin/linux/amd64/kubectl
-chmod +x ./kubectl
+chmod +x /root/kubectl
 
-cp -p ./kubectl /usr/local/bin/
+cp -p /root/kubectl /usr/local/bin/
 
 
 EksDir=/root/practical/terraform/02-eks
@@ -28,3 +28,7 @@ if [ -d $EksDir ];
 then
     cd $EksDir && terraform init && terraform apply --auto-approve
 fi
+
+rm -rf /root/awscli-bundle
+rm -rf /root/awscli-bundle.zip
+rm -rf /root/kubectl
