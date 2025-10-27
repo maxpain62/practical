@@ -1,7 +1,7 @@
 resource "aws_launch_template" "eks_demo_launch_template" {
   name          = "eks_demo_launch_template"
   key_name      = "dpp-key"
-  instance_type = "t3a.medium"
+  instance_type = "t3.medium"
   #image_id      = "ami-02d26659fd82cf299"
   block_device_mappings {
     device_name = "/dev/sdb"
@@ -50,7 +50,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   cluster_name    = aws_eks_cluster.demo_cluster.name
   node_group_name = "demo_nodegroup"
   node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
-  ami_type        = "AL2023_x86_64_STANDARD"
+  ami_type        = "AL2_x86_64"
   capacity_type   = "SPOT"
   #disk_size       = 20
   #instance_types  = ["t3a.medium"]
