@@ -23,11 +23,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-ingress
-  labels:
-    app: nginx
+  name: jenkins
 spec:
-  ingressClassName: nginx
   rules:
     - host: jenkins.gauravtest.store
       http:
@@ -39,6 +36,7 @@ spec:
                 name: jenkins
                 port:
                   number: 8080
+  ingressClassName: nginx
 ---
 apiVersion: apps/v1
 kind: StatefulSet
