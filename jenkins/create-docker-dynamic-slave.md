@@ -106,3 +106,17 @@ CMD ["/usr/sbin/sshd", "-D"]
 - Configure Connect method as below. Select SSh credentials we have created in _**Step 5**_
   ![connect method](docker-slave-6.png)
 - Click on save
+
+### Step 7 - Run sample pipeline
+
+- Create a freestyle job
+  ![create a job](docker-slave-9.png)
+- Check Restrict where this project can be run check box and enter _**Docker agent template**_ name we created in Step 6
+  ![check box](docker-slave-10.png)
+- Scroll down till build steps and select execute shell
+  ![build step](docker-slave-11.png)
+  ![execute shell](docker-slave-12.png)
+- Save the configuration and click on Build Now
+  ![build now](docker-slave-13.png)
+- Console output will be similer to below image
+  ![console output](docker-slave-14.png)
