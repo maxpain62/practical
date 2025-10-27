@@ -10,13 +10,13 @@ apt update; sudo apt-get install terraform -y
 
 #aws cli installation starts here
 ln -s /usr/bin/python3 /usr/bin/python
-curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o /root/awscli-bundle.zip
 unzip awscli-bundle.zip
 sudo /root/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 #aws cli installation ends here
 
 #kubectl installation starts here
-curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.9/2025-09-19/bin/linux/amd64/kubectl
+curl https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.9/2025-09-19/bin/linux/amd64/kubectl -o /root/kubectl
 chmod +x /root/kubectl
 cp -p /root/kubectl /usr/local/bin/
 #kubectl installation ends here
