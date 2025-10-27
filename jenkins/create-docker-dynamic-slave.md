@@ -75,14 +75,24 @@ CMD ["/usr/sbin/sshd", "-D"]
 
 ### Step 4 - Install docker pluggin in jenkins instance
 
-### Step 5 - Configure docker slave
+### Step 5 - Configure credentials
 
-- click on _**Manage Jenkins**_
-- Click on _**Clouds**_
-- Click on _**New Cloud**_. Below page will display
+- Add ssh credeatials click on _**Manage Jenkins**_ > _**Credentials**_
+  ![credentials](docker-slave-7.png)
+- Click on _**System**_ > _**Global credentials (unrestricted)**_ > _**Add credentials**_. Below page will apprear
+  ![new credentials](docker-slave-8.png)
+- Select kind username with password. Enter username and password of your choice here I have entered username as _**jenkins**_ and password as well _**jenkins**_, as I have mentioned same in Dockerfile configuration in _**Step 3**_
+- Click on save
+
+### Step 6 - Configure jenkins slave
+
+- Click on _**Manage Jenkins > Clouds > New Cloud**_.
+  Below page will display
+
   ![New cloud](docker-slave-1.png)
-- enter cloud name and select Docker and click on Create
-- On next page enter docker cloud details like below
+
+- Enter cloud name and select Docker and click on Create
+- On next page enter docker cloud details like below  
   ![Docker cloud details](docker-slave-2.png)
 - Click test connection to check connectivity with docker host. Successful connection will show output like below.
   ![test connectivity](docker-slave-3.png)
@@ -93,11 +103,6 @@ CMD ["/usr/sbin/sshd", "-D"]
 - Enter name of docker image which we created in _**Step 3**_
 - Enter remote file system root and connection method as per screenshot
   ![remote fs](docker-slave-5.png)
-- configure Connect method as below.
+- Configure Connect method as below. Select SSh credentials we have created in _**Step 5**_
   ![connect method](docker-slave-6.png)
-- If you have not added ssh credentials then add then with below steps
-  Manage Jenkins > Credentials
-  ![credentials](docker-slave-7.png)
-- Click on System > Global credentials (unrestricted) > Add credentials. Below page will apprear
-  ![new credentials](docker-slave-8.png)
-- Select kind username with password. Enter username and password of your choice here I have entered username as _**jenkins**_ and password as well _**jenkins**_, as I have mentioned same in Dockerfile configuration in _**Step 3**_
+- Click on save
