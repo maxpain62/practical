@@ -22,7 +22,7 @@ sudo /root/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 #kubectl installation ends here
 
 #cloning practical git repository for eks k8s deployment with help of terraform
-#cd ~; git clone https://github.com/maxpain62/practical.git
+cd ~; git clone https://github.com/maxpain62/practical.git
 #EksDir=/root/practical/terraform/02-eks
 #if [ -d $EksDir ];
 #then
