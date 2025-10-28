@@ -16,18 +16,18 @@ sudo /root/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 #aws cli installation ends here
 
 #kubectl installation starts here
-curl https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.9/2025-09-19/bin/linux/amd64/kubectl -o /root/kubectl
-chmod +x /root/kubectl
-cp -p /root/kubectl /usr/local/bin/
+#curl https://s3.us-west-2.amazonaws.com/amazon-eks/1.32.9/2025-09-19/bin/linux/amd64/kubectl -o /root/kubectl
+#chmod +x /root/kubectl
+#cp -p /root/kubectl /usr/local/bin/
 #kubectl installation ends here
 
 #cloning practical git repository for eks k8s deployment with help of terraform
-cd ~; git clone https://github.com/maxpain62/practical.git
-EksDir=/root/practical/terraform/02-eks
-if [ -d $EksDir ];
-then
-    cd $EksDir && terraform init && terraform apply --auto-approve
-fi
+#cd ~; git clone https://github.com/maxpain62/practical.git
+#EksDir=/root/practical/terraform/02-eks
+#if [ -d $EksDir ];
+#then
+#    cd $EksDir && terraform init && terraform apply --auto-approve
+#fi
 #eks k8s deployment ends here
 
 #cleanup of downloaded files
