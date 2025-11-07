@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: CodeArtifactSA
+  name: code-artifact-sa
   namespace: devops-tools
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::134448505602:role/custom-code-artifact-role
