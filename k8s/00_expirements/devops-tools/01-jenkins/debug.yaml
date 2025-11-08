@@ -7,6 +7,8 @@ spec:
   containers:
     - name: debug
       image: maxpain62/docker-awscli2.0:1.0.0
+      securityContext:
+        privileged: true
       command:
         - sleep
         - 3600s
