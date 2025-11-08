@@ -8,12 +8,24 @@ resource "aws_lb" "demo_alb" {
   }
 }
 
-resource "aws_lb_listener" "demo_lb_listner" {
+/*resource "aws_lb_listener" "demo_lb_listner" {
   load_balancer_arn = aws_lb.demo_alb.arn
   port = "443"
   protocol = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
   certificate_arn = "arn:aws:acm:ap-south-1:134448505602:certificate/ea0de3ec-263d-4a35-a874-700347c4da60"
+  default_action {
+    type = "forward"
+    target_group_arn = aws_lb_target_group.demo_tg.arn
+  }
+}*/
+
+
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.demo_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
   default_action {
     type = "forward"
     target_group_arn = aws_lb_target_group.demo_tg.arn
