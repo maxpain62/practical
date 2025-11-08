@@ -21,7 +21,7 @@ resource "aws_launch_template" "eks_demo_launch_template" {
 resource "aws_eks_cluster" "demo_cluster" {
   name     = "demo-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
-  version  = "1.32"
+  version  = "1.33"
 
   upgrade_policy {
     support_type = "STANDARD"
@@ -50,7 +50,6 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   cluster_name    = aws_eks_cluster.demo_cluster.name
   node_group_name = "demo_nodegroup"
   node_role_arn   = aws_iam_role.eks_nodegroup_role.arn
-  ami_type        = "AL2_x86_64"
   capacity_type   = "SPOT"
   #disk_size       = 20
   #instance_types  = ["t3a.medium"]

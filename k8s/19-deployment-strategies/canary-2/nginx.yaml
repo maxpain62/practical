@@ -64,7 +64,8 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: nginx.gauravtest.store
+      http:
         paths:
           - path: /
             pathType: Prefix
