@@ -1,0 +1,9 @@
+node {
+    stage ('clone') {
+        git branch: 'main', url: 'https://github.com/spring-projects/spring-petclinic.git'
+    }
+    stage ('check maven') {
+        env.PATH = "/opt/maven/bin:${env.PATH}"
+        sh 'mvn -version'
+    }
+}
