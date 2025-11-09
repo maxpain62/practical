@@ -12,15 +12,15 @@ provider "aws" {
 }
 
 resource "aws_instance" "simple_ec2" {
-  instance_type = "t3.medium"
+  instance_type = "t3.micro"
   ami = "ami-02d26659fd82cf299"
   security_groups = ["launch-wizard-1"]
   key_name = "dpp-key"
-  iam_instance_profile = "adminrole"
+  #iam_instance_profile = "adminrole"
   instance_market_options {
     market_type = "spot"
   }
-  user_data = file("terraform_installation.sh")
+  #user_data = file("terraform_installation.sh")
   tags = {
     Name = "simple_ec2"
     env = "dev"
