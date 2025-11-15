@@ -23,7 +23,6 @@ variable "nodegroup_policy_arn" {
 variable "addon_list" {
   type = list(string)
   default = [
-    "vpc-cni",
     "eks-node-monitoring-agent",
     "kube-proxy",
     "eks-pod-identity-agent",
