@@ -1,0 +1,112 @@
+podTemplate(
+    yaml: """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: maven-build
+spec:
+  serviceAccountName: jenkins
+  containers:
+    - name: buildkit
+      image: moby/buildkit:v0.15.0
+      command: 
+        - cat
+      tty: true
+      volumeMounts:
+        - name: home-jenkins
+          mountPath: /home/jenkins/
+        - name: maven-cache
+          mountPath: /root/.m2
+        - name: buildkit-secret
+          mountPath: /root/.docker
+        - name: certs
+          mountPath: /certs
+    - name: aws-cli
+      image: amazon/aws-cli
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - name: maven-cache
+          mountPath: /root/.m2
+    - name: maven
+      image: maxpain62/maven3.9:jdk11
+      command:
+        - cat
+      tty: true
+      resources:
+        limits:
+          memory: "2Gi"
+          cpu: "1000m"
+      volumeMounts:
+        - name: home-jenkins
+          mountPath: /home/jenkins/
+        - name: maven-cache
+          mountPath: /root/.m2
+  volumes:
+    - name: home-jenkins
+      emptyDir:
+    - name: maven-cache
+      emptyDir: {}
+    - name: buildkit-secret
+      secret:
+        secretName: ecr-cred
+        items:
+          - key: .dockerconfigjson
+            path: config.json
+    - name: certs
+      secret:
+        secretName: buildkit-client-certs
+    - name:  git-tmp-volume
+      emptyDir: {}
+"""
+) {
+  node(POD_LABEL) {
+    stage('Checkout Source') {
+      git branch: 'master', url: 'https://github.com/maxpain62/hello-world.git'
+      sh 'ls -l'
+      }
+    stage ('save codeartifact token') {
+      container('aws-cli') {
+        sh '''
+          aws codeartifact get-authorization-token --domain test --domain-owner 134448505602 --region ap-south-1 --query authorizationToken --output text > /root/.m2/token.txt
+           '''
+        }
+      }
+    stage ('buils maven project') {
+      container('maven') {
+      script {
+        try {
+          sh '''
+          cp settings.xml /root/.m2/settings.xml
+          cp toolchains.xml /root/.m2/toolchains.xml
+          TOKEN=$(cat /root/.m2/token.txt)
+          sed "s|replace_me|$TOKEN|" settings-template.xml > /root/.m2/settings.xml
+          mvn clean deploy
+          '''
+        }
+        catch(e) {
+          echo "An error occurred: ${e}"
+        }
+      }
+      
+      }
+    }
+    stage ('build docker image') {
+      container ('buildkit') {
+        sh '''
+          ls -l && ls -l webapp/target/
+          buildctl --addr tcp://buildkitd.devops-tools.svc.cluster.local:1234\
+          --tlscacert /certs/ca.pem\
+          --tlscert /certs/cert.pem\
+          --tlskey /certs/key.pem\
+          build --frontend dockerfile.v0\
+          --opt filename=Dockerfile --local context=.\
+          --local dockerfile=.\
+          --output type=image,name=134448505602.dkr.ecr.ap-south-1.amazonaws.com/hello-world:1.0,push=true
+           '''
+      }
+    }
+  }
+}
