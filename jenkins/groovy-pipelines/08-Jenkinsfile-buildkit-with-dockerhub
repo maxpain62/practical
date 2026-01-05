@@ -65,7 +65,10 @@ spec:
   node(POD_LABEL) {
     stage('Checkout Source') {
       git branch: 'master', url: 'https://github.com/maxpain62/hello-world.git'
-      sh 'ls -l'
+      sh '''
+        ls -l
+        git tags 
+      '''
       }
     stage ('save codeartifact token') {
       container('aws-cli') {
