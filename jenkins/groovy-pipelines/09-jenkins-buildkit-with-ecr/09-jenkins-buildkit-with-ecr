@@ -6,7 +6,7 @@ metadata:
   labels:
     app: maven-build
 spec:
-  serviceAccountName: jenkins
+  serviceAccountName: code-artifact-sa
   containers:
     - name: buildkit
       image: moby/buildkit:v0.15.0
@@ -64,14 +64,22 @@ spec:
 ) {
   node(POD_LABEL) {
     stage('Checkout Source') {
+        
       git branch: 'master', url: 'https://github.com/maxpain62/hello-world.git'
-      sh 'ls -l'
+      script {
+            // Capture tag into a Groovy variable
+            env.GIT_TAG = sh(
+                script: "git tag --sort=-creatordate | head -1",
+                returnStdout: true
+            ).trim()
+        }
+        echo "${env.GIT_TAG}"
       }
     stage ('save codeartifact token') {
       container('aws-cli') {
-        sh '''
+        sh """
           aws codeartifact get-authorization-token --domain test --domain-owner 134448505602 --region ap-south-1 --query authorizationToken --output text > /root/.m2/token.txt
-           '''
+           """
         }
       }
     stage ('buils maven project') {
@@ -85,17 +93,16 @@ spec:
           sed "s|replace_me|$TOKEN|" settings-template.xml > /root/.m2/settings.xml
           mvn clean deploy
           '''
-        }
+          }
         catch(e) {
           echo "An error occurred: ${e}"
+          }
         }
-      }
-      
       }
     }
     stage ('build docker image') {
       container ('buildkit') {
-        sh '''
+        sh """
           ls -l && ls -l webapp/target/
           buildctl --addr tcp://buildkitd.devops-tools.svc.cluster.local:1234\
           --tlscacert /certs/ca.pem\
@@ -104,8 +111,8 @@ spec:
           build --frontend dockerfile.v0\
           --opt filename=Dockerfile --local context=.\
           --local dockerfile=.\
-          --output type=image,name=134448505602.dkr.ecr.ap-south-1.amazonaws.com/hello-world:1.0,push=true
-           '''
+          --output type=image,name=134448505602.dkr.ecr.ap-south-1.amazonaws.com/hello-world:${env.GIT_TAG},push=true
+          """
       }
     }
   }
