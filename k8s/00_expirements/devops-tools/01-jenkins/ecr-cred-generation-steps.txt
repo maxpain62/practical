@@ -1,0 +1,8 @@
+export DOCKER_USER=AWS
+export DOCKER_PASS=$(aws ecr get-login-password --region ap-south-1)
+kubectl  --namespace devops-tools create secret docker-registry ecr-cred\
+ --docker-server="https://134448505602.dkr.ecr.ap-south-1.amazonaws.com"\
+ --docker-username="${DOCKER_USER}" --docker-password="${DOCKER_PASS}"\
+ --dry-run=client -o yaml > ecr-cred.yaml
+kubectl apply -f ecr-cred.yaml
+
