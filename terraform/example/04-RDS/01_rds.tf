@@ -10,4 +10,8 @@ resource "aws_db_instance" "eos_rds" {
   username = "eosadmin"
   password = "eosadmin"
   skip_final_snapshot  = true
+  tags = {
+    Name = "eos_rds"
+    env = "dev"
+  }
 }
