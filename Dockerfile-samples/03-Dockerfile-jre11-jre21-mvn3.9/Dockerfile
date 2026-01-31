@@ -25,6 +25,7 @@ RUN apt update && apt install openjdk-21-jre-headless openjdk-11-jre-headless op
     && mkdir /home/jenkins/.ssh/ /home/jenkins/.m2/
 
 #Copy required files
+
 COPY id_ed25519.pub /home/jenkins/.ssh/authorized_keys 
 COPY toolschains.xml /home/jenkins/.m2/toolschains.xml
 
