@@ -7,7 +7,7 @@ resource "aws_security_group" "eks_demo_sg" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress_https" {
+resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress" {
   security_group_id = aws_security_group.eks_demo_sg.id
   from_port = 0
   to_port = 0
@@ -25,7 +25,7 @@ resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress_https" {
   description = "allow 443 to access cluster"
 }
 
-resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress" {
+resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress_nodeport" {
   security_group_id = aws_security_group.eks_demo_sg.id
   from_port = 30001
   to_port = 32800
@@ -65,7 +65,7 @@ resource "aws_eks_cluster" "demo_cluster" {
   upgrade_policy {
     support_type = "STANDARD"
   }
-  
+
   vpc_config {
     endpoint_private_access = true
     endpoint_public_access  = true
