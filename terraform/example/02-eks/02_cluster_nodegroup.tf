@@ -1,7 +1,7 @@
 resource "aws_launch_template" "eks_demo_launch_template" {
   name          = "eks_demo_launch_template"
   key_name      = "dpp-key"
-  instance_type = "t3.large"
+  instance_type = "t3.medium"
   #image_id      = "ami-02d26659fd82cf299"
   block_device_mappings {
     device_name = "/dev/sdb"
