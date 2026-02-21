@@ -13,7 +13,6 @@ resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress" {
   to_port = 0
   ip_protocol = -1
   referenced_security_group_id = aws_security_group.eks_demo_sg.id
-  description = "allow 443 to access cluster"
 }
 
 resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress_https" {
