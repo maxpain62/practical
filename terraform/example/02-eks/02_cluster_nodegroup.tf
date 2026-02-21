@@ -69,7 +69,7 @@ resource "aws_eks_cluster" "demo_cluster" {
     endpoint_private_access = true
     endpoint_public_access  = true
     subnet_ids              = var.subnet_id
-    cluster_security_group_id = aws_security_group.eks_demo_sg.id
+    security_group_ids = [aws_security_group.eks_demo_sg.id]
   }
 
   access_config {
