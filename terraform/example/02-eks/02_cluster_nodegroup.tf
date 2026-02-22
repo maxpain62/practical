@@ -1,46 +1,8 @@
-resource "aws_security_group" "eks_demo_sg" {
-  name = "eks_demo_sg"
-  description = "security group for eks"
-  
-  tags = {
-    name = "eks_demo_sg"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress" {
-  security_group_id = aws_security_group.eks_demo_sg.id
-  from_port = 0
-  to_port = 0
-  ip_protocol = -1
-  referenced_security_group_id = aws_security_group.eks_demo_sg.id
-}
-
-resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress_https" {
-  security_group_id = aws_security_group.eks_demo_sg.id
-  from_port = 443
-  to_port = 443
-  ip_protocol = "tcp"
-  cidr_ipv4   = "172.31.0.0/16"
-  description = "allow 443 to access cluster"
-}
-
-resource "aws_vpc_security_group_ingress_rule" "eks_demo_sg_ingress_nodeport" {
-  security_group_id = aws_security_group.eks_demo_sg.id
-  from_port = 30001
-  to_port = 32800
-  ip_protocol = "tcp"
-  cidr_ipv4   = "0.0.0.0/0"
-  description = "access for nodeport service"
-}
-
-
-
 resource "aws_launch_template" "eks_demo_launch_template" {
   name          = "eks_demo_launch_template"
   key_name      = "dpp-key"
   instance_type = "t3.medium"
   #image_id      = "ami-02d26659fd82cf299"
-  vpc_security_group_ids = [aws_security_group.eks_demo_sg.id]
   block_device_mappings {
     device_name = "/dev/sdb"
     ebs {
@@ -69,7 +31,6 @@ resource "aws_eks_cluster" "demo_cluster" {
     endpoint_private_access = true
     endpoint_public_access  = true
     subnet_ids              = var.subnet_id
-    security_group_ids = [aws_security_group.eks_demo_sg.id]
   }
 
   access_config {
