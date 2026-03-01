@@ -50,7 +50,8 @@ resource "azurerm_route_table" "tf-demo-rt-table" {
   route {
     name                   = "tf-demo-route"
     address_prefix         = "10.0.0.0/16"
-    next_hop_type          = "Internet"     
+    next_hop_type          = "Internet" 
+    next_hop_in_ip_address   = "0.0.0.0/0"    
     }
 }
 
