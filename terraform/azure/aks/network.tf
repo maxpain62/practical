@@ -53,3 +53,23 @@ resource "azurerm_route_table" "tf-demo-rt-table" {
     next_hop_type          = "Internet"     
     }
 }
+
+resource "azurerm_subnet_route_table_association" "tf-demo-subnet1-rt-association" {
+  subnet_id      = azurerm_subnet.tf-demo-subnet1.id
+  route_table_id = azurerm_route_table.tf-demo-rt-table.id  
+}
+
+resource "azurerm_subnet_route_table_association" "tf-demo-subnet2-rt-association" {
+  subnet_id      = azurerm_subnet.tf-demo-subnet2.id
+  route_table_id = azurerm_route_table.tf-demo-rt-table.id  
+}
+
+resource "azurerm_subnet_network_security_group_association" "tf-demo-subnet1-nsg-association" {
+  subnet_id = azurerm_subnet.tf-demo-subnet1.id
+  network_security_group_id = azurerm_network_security_group.tf-demo-nsg.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "tf-demo-subnet2-nsg-association" {
+  subnet_id = azurerm_subnet.tf-demo-subnet2.id
+  network_security_group_id = azurerm_network_security_group.tf-demo-nsg.id
+}
