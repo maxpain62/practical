@@ -43,22 +43,6 @@ resource "azurerm_subnet" "tf-demo-subnet2" {
   virtual_network_name = azurerm_virtual_network.tf-demo-vnet.name
 }
 
-resource "azurerm_route_table" "tf-demo-rt-table" {
-  name                = "tf-demo-rt-table"
-  location            = azurerm_resource_group.tf-demo-rg.location
-  resource_group_name = azurerm_resource_group.tf-demo-rg.name
-}
-
-resource "azurerm_subnet_route_table_association" "tf-demo-subnet1-rt-association" {
-  subnet_id      = azurerm_subnet.tf-demo-subnet1.id
-  route_table_id = azurerm_route_table.tf-demo-rt-table.id  
-}
-
-resource "azurerm_subnet_route_table_association" "tf-demo-subnet2-rt-association" {
-  subnet_id      = azurerm_subnet.tf-demo-subnet2.id
-  route_table_id = azurerm_route_table.tf-demo-rt-table.id  
-}
-
 resource "azurerm_subnet_network_security_group_association" "tf-demo-subnet1-nsg-association" {
   subnet_id = azurerm_subnet.tf-demo-subnet1.id
   network_security_group_id = azurerm_network_security_group.tf-demo-nsg.id
