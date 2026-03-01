@@ -17,9 +17,6 @@ resource "aws_instance" "simple_ec2" {
   security_groups = ["launch-wizard-1"]
   key_name = "dpp-key"
   iam_instance_profile = "adminrole"
-  instance_market_options {
-    market_type = "spot"
-  }
   user_data = file("terraform_installation.sh")
   tags = {
     Name = "simple_ec2"
