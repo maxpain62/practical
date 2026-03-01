@@ -8,7 +8,7 @@ resource "azurerm_kubernetes_cluster" "tf-demo-aks-cluster" {
   dns_prefix = "tf-demo-aks-cluster"
 
   default_node_pool {
-    name = "tf-demo-default-nodepool"
+    name = "tfdemodefaultnodepool"
     node_count = 3
     vm_size = "Standard_B2as_v2"
     vnet_subnet_id = azurerm_subnet.tf-demo-subnet1.id
