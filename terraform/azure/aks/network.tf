@@ -42,3 +42,14 @@ resource "azurerm_subnet" "tf-demo-subnet2" {
   address_prefixes     = ["10.0.2.0/24"]
   virtual_network_name = azurerm_virtual_network.tf-demo-vnet.name
 }
+
+resource "azurerm_route_table" "tf-demo-rt-table" {
+  name                = "tf-demo-rt-table"
+  location            = azurerm_resource_group.tf-demo-rg.location
+  resource_group_name = azurerm_resource_group.tf-demo-rg.name
+  route {
+    name                   = "tf-demo-route"
+    address_prefix         = "10.0.0.0/16"
+    next_hop_type          = "Internet"     
+    }
+}
