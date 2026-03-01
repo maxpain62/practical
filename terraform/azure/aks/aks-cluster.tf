@@ -5,6 +5,7 @@ resource "azurerm_kubernetes_cluster" "tf-demo-aks-cluster" {
   oidc_issuer_enabled = true
   sku_tier = "Free"
   support_plan = "KubernetesOfficial"
+  dns_prefix = "tf-demo-aks-cluster"
 
   default_node_pool {
     name = "tf-demo-default-nodepool"
@@ -19,7 +20,7 @@ resource "azurerm_kubernetes_cluster" "tf-demo-aks-cluster" {
   
   linux_profile {
     admin_username = "azureadmin"
-    
+
     ssh_key {
       key_data = file("./infra-controller_key")
     }
