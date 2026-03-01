@@ -7,9 +7,9 @@ resource "azurerm_network_security_group" "tf-demo-nsg" {
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "TCP"
+    protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "*"
+    destination_port_range     = "22"
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
@@ -34,8 +34,4 @@ resource "azurerm_subnet" "tf-demo-subnet1" {
   resource_group_name  = azurerm_resource_group.tf-demo-rg.name
   address_prefixes     = ["10.0.1.0/24"]
   virtual_network_name = azurerm_virtual_network.tf-demo-vnet.name
-
-  tags = {
-    env = "dev"
-  }
 }
