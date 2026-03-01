@@ -29,5 +29,8 @@ resource "azurerm_kubernetes_cluster" "tf-demo-aks-cluster" {
   network_profile {
     network_plugin    = "kubenet"
     load_balancer_sku = "standard"
+    # MUST NOT overlap with 10.0.0.0/16
+    service_cidr       = "10.100.0.0/16"
+    dns_service_ip     = "10.100.0.10"
   }
 }
