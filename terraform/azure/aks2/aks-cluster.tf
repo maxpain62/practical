@@ -8,12 +8,12 @@ resource "azurerm_kubernetes_cluster" "aks-demo-cluster" {
   support_plan        = "KubernetesOfficial"
 
   default_node_pool {
-    name       = "default"
-    vm_size    = "Standard_B4als_v2"
-    enable_auto_scaling = true
-    min_count  = 2
-    max_count  = 3
-    node_count = 2
+    name                 = "default"
+    vm_size              = "Standard_B4als_v2"
+    auto_scaling_enabled = true
+    min_count            = 2
+    max_count            = 3
+    node_count           = 2
   }
 
   identity {
