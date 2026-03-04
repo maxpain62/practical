@@ -29,3 +29,11 @@ sudo apt-get update
 sudo apt-get install azure-cli -y
 
 #azure cli installation ends here
+
+#login to azure using managed identity
+az login --identity
+#install kubectl using azure cli
+az aks install-cli
+
+#clone the practical repository
+git clone https://github.com/maxpain62/practical.git
