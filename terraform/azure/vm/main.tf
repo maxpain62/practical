@@ -1,19 +1,38 @@
+resource "azurerm_resource_group" "demo_rg" {
+  name     = "demo_rg"
+  location = "Central India"
+}
+
+resource "azurerm_virtual_network" "demo_vnet" {
+  name                = "demo-vnet"
+  location            = azurerm_resource_group.demo_rg.location
+  resource_group_name = azurerm_resource_group.demo_rg.name
+  address_space       = ["10.0.0.0/16"]
+}
+
+resource "azurerm_subnet" "demo_subnet" {
+  name                 = "demo-subnet"
+  resource_group_name  = azurerm_resource_group.demo_rg.name
+  virtual_network_name = azurerm_virtual_network.demo_vnet.name
+  address_prefixes     = ["10.0.0.0/20"]
+}
+
 resource "azurerm_public_ip" "demo_public_ip" {
   name                = "demo-public-ip"
-  location            = "Central India"
-  resource_group_name = "eos"
+  location            = azurerm_resource_group.demo_rg.location
+  resource_group_name = azurerm_resource_group.demo_rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
 resource "azurerm_network_interface" "demo_network_interface" {
   name                = "demo-network-interface"
-  location            = "Central India"
-  resource_group_name = "eos"
+  location            = azurerm_resource_group.demo_rg.location
+  resource_group_name = azurerm_resource_group.demo_rg.name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = "/subscriptions/3317ca74-0e1e-428c-a67b-45d7d2344bfc/resourceGroups/eos/providers/Microsoft.Network/virtualNetworks/vnet-centralindia/subnets/snet-centralindia-1"
+    subnet_id                     = azurerm_subnet.demo_subnet.id
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.demo_public_ip.id
   }
@@ -21,8 +40,8 @@ resource "azurerm_network_interface" "demo_network_interface" {
 
 resource "azurerm_network_security_group" "demo_nsg" {
   name                = "demo-nsg"
-  location            = "Central India"
-  resource_group_name = "eos"
+  location            = azurerm_resource_group.demo_rg.location
+  resource_group_name = azurerm_resource_group.demo_rg.name
 
   security_rule {
     name                       = "Allow-SSH"
@@ -44,15 +63,15 @@ resource "azurerm_network_interface_security_group_association" "demo_nsg_assoc"
 
 resource "azurerm_ssh_public_key" "demo_public_key" {
   name                = "demo-public-key"
-  resource_group_name = "eos"
-  location            = "Central India"
+  location            = azurerm_resource_group.demo_rg.location
+  resource_group_name = azurerm_resource_group.demo_rg.name
   public_key          = file("./infra-controller_key")
 }
 
 resource "azurerm_linux_virtual_machine" "demo_vm" {
   name                            = "demo-vm"
-  resource_group_name             = "eos"
-  location                        = "Central India"
+  location                        = azurerm_resource_group.demo_rg.location
+  resource_group_name             = azurerm_resource_group.demo_rg.name
   size                            = "Standard_B2als_v2"
   network_interface_ids           = [azurerm_network_interface.demo_network_interface.id]
   admin_username                  = "ubuntu"

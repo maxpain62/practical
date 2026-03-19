@@ -36,4 +36,4 @@ az login --identity
 az aks install-cli
 
 #clone the practical repository
-git clone https://github.com/maxpain62/practical.git
+cd ~; git clone https://github.com/maxpain62/practical.git
