@@ -1,0 +1,54 @@
+import boto3
+import json
+from datetime import datetime, timedelta
+
+REGION = "ap-south-1"
+TOPIC_ARN = "arn:aws:sns:ap-south-1:134448505602:infra-report"
+
+
+def lambda_handler(event, context):
+
+    ec2_client = boto3.client("ec2", region_name=REGION)
+    eks_client = boto3.client("eks", region_name=REGION)
+    rds_client = boto3.client("rds", region_name=REGION)
+    sns_client = boto3.client("sns", region_name=REGION)
+    ce_client = boto3.client("ce", region_name="us-east-1")
+
+    running_instances = []
+    eks_clusters = []
+    rds_instances = []
+
+    # EC2
+    ec2_response = ec2_client.describe_instances(
+        Filters=[{"Name":"instance-state-name","Values":["running"]}]
+    )
+
+    for r in ec2_response["Reservations"]:
+        for i in r["Instances"]:
+            running_instances.append(i["InstanceId"])
+
+    # EKS
+    eks_response = eks_client.list_clusters()
+    for c in eks_response["clusters"]:
+        eks_clusters.append(c)
+
+    # RDS
+    rds_response = rds_client.describe_db_instances()
+    for db in rds_response["DBInstances"]:
+        rds_instances.append(db["DBInstanceIdentifier"])
+
+    result = {
+        "region": REGION,
+        "running_ec2": running_instances,
+        "eks_clusters": eks_clusters,
+        "rds_instances": rds_instances
+    }
+
+    # send email via SNS
+    sns_client.publish(
+        TopicArn=TOPIC_ARN,
+        Subject="AWS Infrastructure Report",
+        Message=json.dumps(result, indent=2)
+    )
+
+    return result
