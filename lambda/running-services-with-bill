@@ -1,0 +1,160 @@
+import boto3
+from datetime import datetime
+
+REGION = "ap-south-1"
+SNS_TOPIC_ARN = "arn:aws:sns:ap-south-1:134448505602:infra-report"
+
+def lambda_handler(event, context):
+
+    ec2 = boto3.client("ec2", region_name=REGION)
+    eks = boto3.client("eks", region_name=REGION)
+    rds = boto3.client("rds", region_name=REGION)
+    sns = boto3.client("sns", region_name=REGION)
+    ce = boto3.client("ce", region_name="us-east-1")  # billing only here
+
+    # -------------------------
+    # EC2
+    # -------------------------
+    ec2_list = []
+
+    ec2_response = ec2.describe_instances(
+        Filters=[{"Name": "instance-state-name", "Values": ["running"]}]
+    )
+
+    for r in ec2_response["Reservations"]:
+        for i in r["Instances"]:
+            name = "N/A"
+            if "Tags" in i:
+                for tag in i["Tags"]:
+                    if tag["Key"] == "Name":
+                        name = tag["Value"]
+
+            ec2_list.append({
+                "id": i["InstanceId"],
+                "name": name,
+                "type": i["InstanceType"],
+                "private_ip": i.get("PrivateIpAddress", "N/A")
+            })
+
+    # -------------------------
+    # EKS
+    # -------------------------
+    eks_list = []
+
+    clusters = eks.list_clusters()["clusters"]
+
+    for c in clusters:
+        desc = eks.describe_cluster(name=c)["cluster"]
+        eks_list.append({
+            "name": c,
+            "version": desc.get("version"),
+            "status": desc.get("status")
+        })
+
+    # -------------------------
+    # RDS
+    # -------------------------
+    rds_list = []
+
+    rds_response = rds.describe_db_instances()
+
+    for db in rds_response["DBInstances"]:
+        rds_list.append({
+            "id": db["DBInstanceIdentifier"],
+            "engine": db["Engine"],
+            "status": db["DBInstanceStatus"],
+            "endpoint": db.get("Endpoint", {}).get("Address", "N/A")
+        })
+
+    # -------------------------
+    # BILLING (MONTHLY TOTAL)
+    # -------------------------
+    today = datetime.utcnow().date()
+    start_of_month = today.replace(day=1)
+
+    cost_response = ce.get_cost_and_usage(
+        TimePeriod={
+            "Start": start_of_month.strftime("%Y-%m-%d"),
+            "End": today.strftime("%Y-%m-%d")
+        },
+        Granularity="MONTHLY",
+        Metrics=["UnblendedCost"]
+    )
+
+    total_cost = 0.0
+
+    for result in cost_response["ResultsByTime"]:
+        amount = result["Total"]["UnblendedCost"]["Amount"]
+        total_cost += float(amount)
+
+    total_cost = round(total_cost, 2)
+
+    # -------------------------
+    # FORMAT FUNCTIONS
+    # -------------------------
+    def format_ec2():
+        if not ec2_list:
+            return "None"
+        return "\n".join([
+            f"{i['name']} ({i['id']}) | {i['type']} | {i['private_ip']}"
+            for i in ec2_list
+        ])
+
+    def format_eks():
+        if not eks_list:
+            return "None"
+        return "\n".join([
+            f"{c['name']} | v{c['version']} | {c['status']}"
+            for c in eks_list
+        ])
+
+    def format_rds():
+        if not rds_list:
+            return "None"
+        return "\n".join([
+            f"{d['id']} | {d['engine']} | {d['status']}"
+            for d in rds_list
+        ])
+
+    # -------------------------
+    # FINAL MESSAGE
+    # -------------------------
+    message = f"""
+AWS Infrastructure Report
+========================
+Region: {REGION}
+Time: {datetime.utcnow().strftime('%Y-%m-%d %H:%M UTC')}
+
+Total AWS Cost (This Month)
+--------------------------
+${total_cost}
+
+EC2 Instances
+-------------
+{format_ec2()}
+
+EKS Clusters
+------------
+{format_eks()}
+
+RDS Instances
+-------------
+{format_rds()}
+"""
+
+    # -------------------------
+    # SEND EMAIL
+    # -------------------------
+    sns.publish(
+        TopicArn=SNS_TOPIC_ARN,
+        Subject="AWS Monthly Cost & Infra Report",
+        Message=message
+    )
+
+    return {
+        "status": "success",
+        "monthly_total_cost": total_cost,
+        "ec2_count": len(ec2_list),
+        "eks_count": len(eks_list),
+        "rds_count": len(rds_list)
+    }
