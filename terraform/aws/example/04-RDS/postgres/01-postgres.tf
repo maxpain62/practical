@@ -11,6 +11,7 @@ resource "aws_db_instance" "eos_rds" {
   password = "postgres"
   skip_final_snapshot  = true
   identifier = "mlflow"
+  vpc_security_group_ids = ["sg-01dc33cd3198b94bd"]
   tags = {
     Name = "mlflow"
     env = "dev"
