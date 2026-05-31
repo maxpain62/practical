@@ -20,32 +20,29 @@
 
 ```
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::134448505602:oidc-provider/token.actions.githubusercontent.com"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-                },
-                "StringLike": {
-                    "token.actions.githubusercontent.com:sub": [
-                        "repo:maxpain62/hello-world:*",
-                        "repo:maxpain62/hello-world:*"
-                    ]
-                }
-            }
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"Federated": "arn:aws:iam::134448505602:oidc-provider/token.actions.githubusercontent.com"
+			},
+			"Action": "sts:AssumeRoleWithWebIdentity",
+			"Condition": {
+				"StringEquals": {
+					"token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
+				},
+				"StringLike": {
+					"token.actions.githubusercontent.com:sub": "repo:maxpain62/hello-world:*"
+				}
+			}
+		}
+	]
 }
 ```
 
 ## Step 3 - Verify with below code block
-### note - make sure value of _**role-to-assume**_ must match role arn we created in *step 2*
+- note - make sure value of _**role-to-assume**_ must match role arn we created in *step 2*
 ```
     - name: Configure AWS Credentials 1
       id: creds
