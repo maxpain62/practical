@@ -40,6 +40,26 @@
 	]
 }
 ```
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::134448505602:oidc-provider/token.actions.githubusercontent.com"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringLike": {
+                    "token.actions.githubusercontent.com:aud": "sts.amazonaws.com",
+                    "token.actions.githubusercontent.com:sub": "repo:maxpain62/hello-world:*"
+                }
+            }
+        }
+    ]
+}
+```
 
 ## Step 3 - Verify with below code block
 - note - make sure value of _**role-to-assume**_ must match role arn we created in *step 2*
