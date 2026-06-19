@@ -15,9 +15,10 @@
 2. Select **token.actions.githubusercontent.com** from Identity provider.
 3. Select **sts.amazonaws.com** from Audience
 4. On add permissionpage select policy **AmazonEC2ContainerRegistryFullAccess**
-5. Enter role name and create the role.
-6. Make sure you will see trust policy like below
+5. Enter role name and create the role. Note down this role name as we need name in __*Step 3*__
+6. Make sure you will see trust policy like below any one of below sample
 
+ - SAMPLE 1
 ```
 {
 	"Version": "2012-10-17",
@@ -40,6 +41,7 @@
 	]
 }
 ```
+ - SAMPLE 2
 ```
 {
     "Version": "2012-10-17",
