@@ -94,7 +94,7 @@ NAME                           SECRETS   AGE
 aws-load-balancer-controller   0         34s
 ```
 
-4. If IAM Role is still not created, manually create it with following steps
+### If IAM Role is still not created, manually create it with following steps
 
 - Download an IAM policy for the AWS Load Balancer Controller that allows it to make calls to AWS APIs on your behalf.
 ```
