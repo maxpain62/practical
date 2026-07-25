@@ -20,10 +20,6 @@ resource "aws_instance" "simple_spot_ec2" {
     user_data = file("terraform_installation.sh")
     instance_market_options {
         market_type = "spot"
-	spot_options {
-            instance_interruption_behavior = "stop"
-	    spot_instance_type = "persistent"
-        }
     }
 
     tags = {
