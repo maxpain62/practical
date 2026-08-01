@@ -314,7 +314,7 @@ pod/buildkitd-8568d4f858-xf47h   1/1     Running   0          62s
 pod/jenkins-ss-0                 1/1     Running   0          9m1s
 ```
 
-### Step 3 - Configure Jenkins master to use containerize jenkis slave.
+### Step 3 - Configure kubernetes cloud on Jenkins master.
 
 1. Install kubernetes plugin
 - Click on manager jenkins ![manager jenkins](image-1.png)
@@ -328,3 +328,88 @@ pod/jenkins-ss-0                 1/1     Running   0          9m1s
 - Enter name of your choice and click on create ![](image-5.png)
 - Click on test connection in new cloud page ![new cloud](image-6.png), Connected to Kubernetes should appear after clicking.
 - Enter jenkins url "http://jenkins:8080" and click on save
+
+### Step 4 - Configuring Jenkins slave
+
+1. Create pod.yaml file in github repository and mound secret created in step 2 as volume.
+
+```
+kubectl get secret
+NAME                    TYPE                             DATA   AGE
+buildkit-client-certs   Opaque                           3      38m
+ecr-cred                kubernetes.io/dockerconfigjson   1      45m
+```
+
+```
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: maven-build
+spec:
+  serviceAccountName: code-artifact-sa
+  containers:
+    - name: buildkit
+      image: moby/buildkit:v0.15.0
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - name: home-jenkins
+          mountPath: /home/jenkins/
+        - name: maven-cache
+          mountPath: /root/.m2
+        - name: buildkit-secret
+          mountPath: /root/.docker
+        - name: certs
+          mountPath: /certs
+    - name: aws-cli-helm
+      image: maxpain62/aws-cli:helm-3.20.0
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - name: home-jenkins
+          mountPath: /home/jenkins/
+  volumes:
+    - name: home-jenkins
+      emptyDir:
+    - name: maven-cache
+      emptyDir: {}
+    - name: buildkit-secret
+      secret:
+        secretName: ecr-cred
+        items:
+          - key: .dockerconfigjson
+            path: config.json
+    - name: certs
+      secret:
+        secretName: buildkit-client-certs
+    - name: git-tmp-volume
+      emptyDir: {}
+```
+
+2. Refer pod.yaml in Jenkins file as per below sample code
+```
+podTemplate(yaml: readTrusted('pod.yaml')) {
+    node(POD_LABEL) {
+        stage('Checkout') {
+            git branch: 'main', url: 'https://github.com/maxpain62/msdemo-adservice.git'
+        }
+        stage('Build Docker Image') {
+            container('buildkit') {
+                sh """
+                    buildctl --addr tcp://buildkitd.devops-tools.svc.cluster.local:1234\
+                    --tlscacert /certs/ca.pem\
+                    --tlscert /certs/cert.pem\
+                    --tlskey /certs/key.pem\
+                    build --frontend dockerfile.v0\
+                    --opt filename=Dockerfile --local context=.\
+                    --local dockerfile=.\
+                    --output type=image,name=134448505602.dkr.ecr.ap-south-1.amazonaws.com/msdemo-adservice,push=true
+                """
+            }
+        }
+    }
+}
+```
