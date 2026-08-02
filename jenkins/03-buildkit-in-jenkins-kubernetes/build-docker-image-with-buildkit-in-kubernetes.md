@@ -340,15 +340,21 @@ pod/jenkins-ss-0                 1/1     Running   0          9m1s
 
 1. Install kubernetes plugin
 - Click on manager jenkins ![manager jenkins](image-1.png)
-- Click on plugins ![Plugins](image-2.png)
-- Search kubernetes plugin and install ![kubernetes](image-3.png)
+- Click on plugins 
+  - ![Plugins](image-2.png)
+- Search kubernetes plugin and install 
+  - ![kubernetes](image-3.png)
 
 2. Once kubernetes plugin is installed configure kubernetes cloud.
 - Click on manager jenkins ![manager jenkins](image-1.png)
-- Click on Clouds ![Clouds](image-4.png)
+- Click on Clouds 
+  - ![Clouds](image-4.png)
 - Click on new cloud
-- Enter name of your choice and click on create ![](image-5.png)
-- Click on test connection in new cloud page ![new cloud](image-6.png), Connected to Kubernetes should appear after clicking.
+- Enter name of your choice and click on create 
+  - ![](image-5.png)
+- Click on test connection in new cloud page 
+  - ![new cloud](image-6.png)
+  - __*Connected to Kubernetes*__ should appear after clicking.
 - Enter jenkins url "http://jenkins:8080" and click on save
 
 ### Step 4 - Configuring Jenkins slave
