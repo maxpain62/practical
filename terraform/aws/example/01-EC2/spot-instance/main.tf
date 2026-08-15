@@ -12,7 +12,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "simple_spot_ec2" {
-    instance_type = "t3.medium"
+    instance_type = "t3a.medium"
     ami = "ami-02d26659fd82cf299"
     security_groups = ["launch-wizard-1"]                                                                                                       
     key_name = "dpp-key"
