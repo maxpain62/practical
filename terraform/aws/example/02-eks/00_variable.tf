@@ -28,7 +28,8 @@ variable "addon_list" {
     "eks-pod-identity-agent",
     "coredns",
     "external-dns",
-    "metrics-server"
+    "metrics-server",
+    "vpc-cni"
   ]
 }
 
