@@ -76,8 +76,6 @@ resource "aws_eks_node_group" "demo_nodegroup" {
     instancetype = "mseries"
   }
 
-
-
   tags = {
     env = "dev"
     speed = "fast"
@@ -96,7 +94,7 @@ resource "aws_eks_node_group" "demo_nodegroup" {
   ami_type        = "AL2023_x86_64_STANDARD"
   capacity_type   = "SPOT"
   disk_size       = 20
-  instance_types  = ["t3a.medium"]
+  instance_types  = ["t3a.large"]
   subnet_ids      = var.subnet_id
 
   scaling_config {
