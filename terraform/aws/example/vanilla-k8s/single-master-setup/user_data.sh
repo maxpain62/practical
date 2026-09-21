@@ -60,7 +60,7 @@ ls -l /root/.kube/config
 
 
 ##cilium installation and startup
-echo "cilium installation started here"
+echo "######cilium installation started here######"
 CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
 CLI_ARCH=amd64
 if [ "$(uname -m)" = "aarch64" ]; then CLI_ARCH=arm64; fi

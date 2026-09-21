@@ -16,18 +16,27 @@ resource "aws_instance" "kubernetes_master" {
     }
 }
 
-output "public_ip" {
-  value = aws_instance.kubernetes_master.public_ip
+data "aws_ami" "ubuntu" {
+  filter {
+    name = "image-id"
+    values = [ "ami-001e7cc215773c7fb" ]
+  }
 }
 
 resource "aws_launch_template" "node_lt" {
   name = "node_lt"
-  image_id = "ami-02d26659fd82cf299"
+  image_id = "ami-001e7cc215773c7fb"
   instance_type = "t3a.medium"
   key_name = "dpp-key"
   security_group_names = [ "launch-wizard-1" ]
   instance_market_options {
     market_type = "spot"
+  }
+  block_device_mappings {
+    device_name = data.aws_ami.ubuntu.root_device_name
+    ebs {
+      volume_size = 20
+    }
   }
 
   user_data = filebase64("node_user_data.sh")
@@ -40,6 +49,16 @@ resource "aws_launch_template" "node_lt" {
       controlplane = false
     }
   }
+  tag_specifications {
+    resource_type = "volume"
+    tags = {
+      Name = "node-volume"
+      env = "dev"
+      app = "kubernetes"
+      controlplane = false
+    }
+  }
+  depends_on = [ aws_instance.kubernetes_master ]
 }
 
 resource "aws_autoscaling_group" "node_asg" {
@@ -51,4 +70,9 @@ resource "aws_autoscaling_group" "node_asg" {
     id = aws_launch_template.node_lt.id
     version = "$Latest"
   }
+  depends_on = [ aws_launch_template.node_lt ]
+}
+
+output "public_ip" {
+  value = aws_instance.kubernetes_master.public_ip
 }
