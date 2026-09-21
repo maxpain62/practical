@@ -25,12 +25,14 @@ cp -p /root/kubectl /usr/local/bin/
 
 #cloning practical git repository for eks k8s deployment with help of terraform
 cd ~; git clone https://github.com/maxpain62/practical.git
-#EksDir=/root/practical/terraform/02-eks
-#if [ -d $EksDir ];
-#then
-#    cd $EksDir && terraform init && terraform apply --auto-approve
-#fi
 #eks k8s deployment ends here
+
+#helm installation starts here
+cd ~
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+chmod 700 get_helm.sh
+./get_helm.sh
+#helm installation ends here
 
 #cleanup of downloaded files
 rm -rf /root/awscli-bundle
