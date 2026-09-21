@@ -5,13 +5,10 @@ resource "aws_instance" "ec2" {
   security_groups = var.security_groups
   key_name = var.key_name
   user_data = var.user_data
+  iam_instance_profile = var.iam_instance_profile
 
   tags = {
     Name = "${var.ec2-name}-${count.index}"
     env = "dev"
   }
-}
-
-output "public_ip" {
-  value = aws_instance.ec2.*.public_ip
 }

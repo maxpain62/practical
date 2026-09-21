@@ -30,4 +30,14 @@ variable "key_name" {
 
 variable "user_data" {
   type = string
+  default = "value"
+}
+
+variable "env" {
+  type = string
+  default = "dev"
+}
+
+variable "iam_instance_profile" {
+  type = string
 }
