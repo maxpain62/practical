@@ -22,6 +22,20 @@ installRequiredPackages() {
     echo "------------------------------"
 }
 
+awsCliInstallation() {
+    echo "----------------------------"
+    echo "aws cli installation started"
+    echo "----------------------------"
+    ln -s /usr/bin/python3 /usr/bin/python
+    curl -O https://s3.amazonaws.com/aws-cli/awscli-bundle.zip
+    mv /awscli-bundle.zip /root/awscli-bundle.zip
+    unzip /root/awscli-bundle.zip -d /root/
+    sudo /root/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+    echo "------------------------------"
+    echo "aws cli installation completed"
+    echo "------------------------------"
+}
+
 containerRuntimeInstallation() 
 {
     echo "------------------------------"
@@ -80,6 +94,7 @@ checkControlPlaneName() {
     else
         sleep 180s
         joinCluster
+    fi
 }
 
 
