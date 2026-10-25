@@ -1,15 +1,20 @@
 #!/bin/bash
 swapoff	-a
-setVariables
-installRequiredPackages
-containerRuntimeInstallation
-kubernetesPackagesInstallation
-checkControlPlaneName
+
+allControlPlaneCommonTasks() {
+    setVariables
+    installRequiredPackages
+    containerRuntimeInstallation
+    kubernetesPackagesInstallation
+    checkControlPlaneName
+    ciliumInstallation
+}
 
 setVariables() {
     echo "-------------"
     echo "Set variables"
     echo "-------------"
+    export AWS_REGION=ap-south-1
     export KUBERNETES_VERSION=v1.36
     export CRIO_VERSION=v1.36
     export KUBECONFIG=/etc/kubernetes/admin.conf
@@ -21,6 +26,9 @@ installRequiredPackages() {
     echo "--------------------------"
     apt-get	update
     apt-get	install	-y software-properties-common curl
+    echo "------------------------------"
+    echo "packages Installtion completed"
+    echo "------------------------------"
 }
 
 containerRuntimeInstallation() 
@@ -48,29 +56,45 @@ containerRuntimeInstallation()
     net.bridge.bridge-nf-call-iptables = 1
     net.bridge.bridge-nf-call-ip6tables = 1 
 EOF
+
+    echo "----------------------------------------"
+    echo "Container runtime installation completed"
+    echo "----------------------------------------"
 }
 
 kubernetesPackagesInstallation() {
-#kubelet kubeadm kubectl installation
+    echo "------------------------------------"
+    echo "kubelet kubeadm kubectl installation"
+    echo "------------------------------------"
     sudo apt-get install -y apt-transport-https	ca-certificates	curl gpg kubelet kubeadm kubectl
     sudo apt-mark hold kubelet kubeadm kubectl
     sudo systemctl enable --now kubelet
     sudo systemctl start kubelet
+    echo "----------------------------------------------"
+    echo "kubelet kubeadm kubectl installation completed"
+    echo "----------------------------------------------"
 }
 
 checkControlPlaneName() {
+    echo "-----------------------------------------------------------"
+    echo "Fetch and check control plane name is controlplane-0 or not"
+    echo "-----------------------------------------------------------"
     INSTANCE_TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` && \
     INSTANCE_ID=`curl -H "X-aws-ec2-metadata-token: $INSTANCE_TOKEN" http://169.254.169.254/latest/meta-data/instance-id`
-    INSTANCE_NAME=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=Name" --region ap-south-1 --query "Tags[0].Value" --output text)
+    INSTANCE_NAME=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=Name" --region $AWS_REGION --query "Tags[0].Value" --output text)
     if [ "$INSTANCE_NAME" == "controlplane-0"  ]; then
         bootstrapKubernetesControlPlane
+        kubeConfigFileCopy
+        uploadTokenAndCertificateHash
     else
         sleep 180s
-        kubeadm join --discovery-token abcdef.1234567890abcdef --discovery-token-ca-cert-hash sha256:1234..cdef --control-plane 1.2.3.4:6443
-        kubeConfigFileCopy
+        joinCluster
 }
 
 bootstrapKubernetesControlPlane() {
+    echo "------------------------"
+    echo "bootstrap controlplane-0"
+    echo "------------------------"
 cat << EOF > kubeadm-config.yaml
 # kubeadm-config.yaml
 kind: ClusterConfiguration
@@ -83,16 +107,47 @@ cgroupDriver: systemd
 EOF
 
 kubeadm init --config kubeadm-config.yaml
-kubeConfigFileCopy
+    echo "----------------------------------"
+    echo "bootstrap controlplane-0 completed"
+    echo "----------------------------------"
 }
 
 kubeConfigFileCopy() {
+    echo "---------------------"
+    echo "Copy kubeconfig files"
+    echo "---------------------"
     mkdir -p /root/.kube
     sudo cp -i /etc/kubernetes/admin.conf /root/.kube/config
     sudo chown 0:0 /root/.kube/config
-    ciliumInstallation
+    echo "--------------------------"
+    echo "Copy kubeconfig files done"
+    echo "--------------------------"
 }
 
+uploadTokenAndCertificateHash() {
+    echo "----------------------------------------"
+    echo "upload values to aws ssm parameter store"
+    echo "----------------------------------------"
+    local CONTROL_PLANE_TOKEN=$(kubeadm token list -o json | jq -r '.token')  
+    local CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
+    local CONTROL_PLANE_PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: $INSTANCE_TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
+    aws ssm put-parameter --name "CONTROL_PLANE_TOKEN" --type "String" --value "$CONTROL_PLANE_TOKEN" --overwrite --region $AWS_REGION
+    aws ssm put-parameter --name "CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH" --type "String" --value "$CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH" --overwrite --region $AWS_REGION
+    aws ssm put-parameter --name "CONTROL_PLANE_PRIVATE_IP" --type "String" --value "$CONTROL_PLANE_PRIVATE_IP" --overwrite --region $AWS_REGION
+    echo "--------------------------------------------------"
+    echo "upload values to aws ssm parameter store completed"
+    echo "--------------------------------------------------"
+}
+
+joinCluster() {
+    echo "-----------------------"
+    echo "join kubernetes cluster"
+    echo "-----------------------"
+    local CONTROL_PLANE_PRIVATE_IP=$(aws ssm get-parameter --name "CONTROL_PLANE_PRIVATE_IP" --region ap-south-1 --query "Parameter.Value" --output text)
+    local CONTROL_PLANE_TOKEN=$(aws ssm get-parameter --name "CONTROL_PLANE_TOKEN" --region ap-south-1 --query "Parameter.Value" --output text)
+    local CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH=$(aws ssm get-parameter --name "CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH" --region ap-south-1 --query "Parameter.Value" --output text)
+    kubeadm join $CONTROL_PLANE_PRIVATE_IP:6443 --token $CONTROL_PLANE_TOKEN --discovery-token-ca-cert-hash sha256:$CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH
+}
 
 ciliumInstallation() {
     ##cilium installation and startup
