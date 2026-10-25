@@ -89,6 +89,7 @@ checkControlPlaneName() {
         joinCluster
 }
 
+
 bootstrapKubernetesControlPlane() {
     echo "------------------------"
     echo "bootstrap controlplane-0"
