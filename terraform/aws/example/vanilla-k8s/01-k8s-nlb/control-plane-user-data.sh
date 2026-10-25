@@ -16,7 +16,7 @@ installRequiredPackages() {
     echo "Installe required packages"
     echo "--------------------------"
     apt-get	update
-    apt-get	install	-y software-properties-common curl
+    apt-get	install	-y software-properties-common curl gnupg python3.12-venv unzip
     echo "------------------------------"
     echo "packages Installtion completed"
     echo "------------------------------"
