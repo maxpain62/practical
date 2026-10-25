@@ -1,14 +1,12 @@
 #!/bin/bash
 swapoff	-a
 
-allControlPlaneCommonTasks() {
-    setVariables
-    installRequiredPackages
-    containerRuntimeInstallation
-    kubernetesPackagesInstallation
-    checkControlPlaneName
-    ciliumInstallation
-}
+setVariables
+installRequiredPackages
+containerRuntimeInstallation
+kubernetesPackagesInstallation
+checkControlPlaneName
+ciliumInstallation
 
 setVariables() {
     echo "-------------"
