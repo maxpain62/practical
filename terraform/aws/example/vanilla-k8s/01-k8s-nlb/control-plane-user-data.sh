@@ -94,6 +94,7 @@ checkControlPlaneName() {
     else
         sleep 180s
         joinCluster
+        kubeConfigFileCopy
     fi
 }
 
@@ -153,7 +154,7 @@ joinCluster() {
     local CONTROL_PLANE_PRIVATE_IP=$(aws ssm get-parameter --name "CONTROL_PLANE_PRIVATE_IP" --region ap-south-1 --query "Parameter.Value" --output text)
     local CONTROL_PLANE_TOKEN=$(aws ssm get-parameter --name "CONTROL_PLANE_TOKEN" --region ap-south-1 --query "Parameter.Value" --output text)
     local CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH=$(aws ssm get-parameter --name "CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH" --region ap-south-1 --query "Parameter.Value" --output text)
-    kubeadm join $CONTROL_PLANE_PRIVATE_IP:6443 --token $CONTROL_PLANE_TOKEN --discovery-token-ca-cert-hash sha256:$CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH
+    kubeadm join --discovery-token $CONTROL_PLANE_TOKEN --discovery-token-ca-cert-hash sha256:$CONTROL_PLANE_KUBERNETES_CERTIFICATE_HASH --control-plane $CONTROL_PLANE_PRIVATE_IP:6443
 }
 
 ciliumInstallation() {
