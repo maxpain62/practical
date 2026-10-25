@@ -171,6 +171,7 @@ ciliumInstallation() {
 
 setVariables
 installRequiredPackages
+awsCliInstallation
 containerRuntimeInstallation
 kubernetesPackagesInstallation
 checkControlPlaneName
