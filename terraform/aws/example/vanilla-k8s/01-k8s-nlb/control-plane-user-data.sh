@@ -1,13 +1,6 @@
 #!/bin/bash
 swapoff	-a
 
-setVariables
-installRequiredPackages
-containerRuntimeInstallation
-kubernetesPackagesInstallation
-checkControlPlaneName
-ciliumInstallation
-
 setVariables() {
     echo "-------------"
     echo "Set variables"
@@ -160,3 +153,10 @@ ciliumInstallation() {
     rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
     cilium install 1.20.1
 }
+
+setVariables
+installRequiredPackages
+containerRuntimeInstallation
+kubernetesPackagesInstallation
+checkControlPlaneName
+ciliumInstallation
