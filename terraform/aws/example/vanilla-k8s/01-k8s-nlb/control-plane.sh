@@ -126,8 +126,14 @@ fetchClusterJoiningCommand() {
     echo "----------------------------------------------"
     echo "fetch cluster joining command and join cluster"
     echo "----------------------------------------------"
+    #Register target to k8s target group
+    TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --region $AWS_REGION --names "k8s" --query "TargetGroups[0].TargetGroupArn" --output text)
+    aws elbv2 register-targets --target-group-arn $TARGET_GROUP_ARN --targets Id=$INSTANCE_ID --region $AWS_REGION
+
+    #Fetch cluster joining command from ssm parameter store
     FETCH_CLUSTER_JOINING_COMMAND=$(aws ssm get-parameter --name "CLUSTER_JOINING_COMMAND" --region $AWS_REGION --query "Parameter.Value" --output text)
     $FETCH_CLUSTER_JOINING_COMMAND
+
     echo "-------------------------"
     echo "cluster joining completed"
     echo "-------------------------"
