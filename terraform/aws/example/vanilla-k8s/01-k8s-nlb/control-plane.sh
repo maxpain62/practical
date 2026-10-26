@@ -89,9 +89,16 @@ checkControlPlaneName() {
     INSTANCE_NAME=$(aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=Name" --region $AWS_REGION --query "Tags[0].Value" --output text)
     CONTROL_PLANE_PRIVATE_IP=$(curl -H "X-aws-ec2-metadata-token: $INSTANCE_TOKEN" http://169.254.169.254/latest/meta-data/local-ipv4)
     if [ "$INSTANCE_NAME" == "controlplane-0" ]; then
+        echo "-------------------------------------------"
+        echo "This is controlplane-0 initializing cluster"
+        echo "-------------------------------------------"
         controlPlaneEndPointNLB
         kubeConfigFileCopy
     else
+        echo "--------------------------------------------------"
+        echo "This is $INSTANCE_NAME this node will join cluster"
+        echo "--------------------------------------------------"
+        sleep 180s
         fetchClusterJoiningCommand
         kubeConfigFileCopy
     fi
@@ -119,7 +126,6 @@ controlPlaneEndPointNLB() {
     echo "-----------------------------------------"
     echo "Initialization of control plane completed"
     echo "-----------------------------------------"
-    sleep 30s
 }
 
 fetchClusterJoiningCommand() {
@@ -127,10 +133,12 @@ fetchClusterJoiningCommand() {
     echo "fetch cluster joining command and join cluster"
     echo "----------------------------------------------"
     #Register target to k8s target group
+    sleep 30s
     TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --region $AWS_REGION --names "k8s" --query "TargetGroups[0].TargetGroupArn" --output text)
     aws elbv2 register-targets --target-group-arn $TARGET_GROUP_ARN --targets Id=$INSTANCE_ID --region $AWS_REGION
-
+    
     #Fetch cluster joining command from ssm parameter store
+    sleep 30s
     FETCH_CLUSTER_JOINING_COMMAND=$(aws ssm get-parameter --name "CLUSTER_JOINING_COMMAND" --region $AWS_REGION --query "Parameter.Value" --output text)
     $FETCH_CLUSTER_JOINING_COMMAND
 
