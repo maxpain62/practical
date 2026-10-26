@@ -1,4 +1,4 @@
-resource "aws_lb_target_group" "k8s" {
+resource "aws_lb_target_group" "k8s_tg" {
   name     = "k8s-tg"
   port     = 6443
   protocol = "TCP"
@@ -23,7 +23,7 @@ resource "aws_lb_listener" "k8s_listener" {
 }
 
 resource "aws_lb" "k8s_lb" {
-  name               = "k8s"
+  name               = "k8s-lb"
   internal           = false
   load_balancer_type = "network"
   security_groups    = ["sg-01dc33cd3198b94bd"]
