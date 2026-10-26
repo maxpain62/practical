@@ -93,6 +93,7 @@ checkControlPlaneName() {
         kubeConfigFileCopy
     else
         echo "if not controlplane-0 then this block will execute"
+    fi
 }
 
 controlPlaneEndPointNLB() {
