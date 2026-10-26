@@ -17,3 +17,7 @@ resource "aws_instance" "control-plane" {
 
   depends_on = [ aws_lb.k8s ]
 }
+
+output "control_plane_public_ip" {
+  value = aws_instance.control-plane.*.public_ip
+}
