@@ -4,7 +4,7 @@ resource "aws_instance" "control-plane" {
   instance_type        = var.instance_type
   ami                  = var.ami
   key_name             = var.key_name
-  user_data            = file("control-plane-user-data.sh")
+  user_data            = file("control-plane.sh")
   security_groups      = ["launch-wizard-1"]
   iam_instance_profile = "adminrole"
 
