@@ -128,6 +128,12 @@ controlPlaneEndPointNLB() {
         #upload cluster joining command to ssm parameter store
         aws ssm put-parameter --name "CLUSTER_JOINING_COMMAND" --type "String" --value "$CLUSTER_JOINING_COMMAND" --overwrite --region $AWS_REGION
         sleep 60s
+
+        #Generate custer joining command for worker nodes
+        CLUSTER_JOINING_COMMAND_WORKER_NODE=$(kubeadm token create --print-join-command)
+        #Upload custer joining command for worker nodes to ssm parameter store
+        aws ssm put-parameter --name "CLUSTER_JOINING_COMMAND_WORKER_NODE" --type "String" --value "$CLUSTER_JOINING_COMMAND_WORKER_NODE" --overwrite --region $AWS_REGION
+
     fi
     echo "-----------------------------------------"
     echo "Initialization of control plane completed"
