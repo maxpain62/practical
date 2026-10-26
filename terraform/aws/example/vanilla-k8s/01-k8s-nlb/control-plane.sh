@@ -9,6 +9,7 @@ setVariables() {
     export KUBERNETES_VERSION=v1.36
     export CRIO_VERSION=v1.36
     export KUBECONFIG=/etc/kubernetes/admin.conf
+    sleep 5s
 }
 
 installRequiredPackages() {
@@ -20,6 +21,7 @@ installRequiredPackages() {
     echo "------------------------------"
     echo "packages Installtion completed"
     echo "------------------------------"
+    sleep 5s
 }
 
 awsCliInstallation() {
@@ -34,6 +36,7 @@ awsCliInstallation() {
     echo "------------------------------"
     echo "aws cli installation completed"
     echo "------------------------------"
+    sleep 5s
 }
 
 containerRuntimeInstallation() 
@@ -65,6 +68,7 @@ EOF
     echo "----------------------------------------"
     echo "Container runtime installation completed"
     echo "----------------------------------------"
+    sleep 5s
 }
 
 kubernetesPackagesInstallation() {
@@ -78,6 +82,7 @@ kubernetesPackagesInstallation() {
     echo "----------------------------------------------"
     echo "kubelet kubeadm kubectl installation completed"
     echo "----------------------------------------------"
+    sleep 5s
 }
 
 checkControlPlaneName() {
