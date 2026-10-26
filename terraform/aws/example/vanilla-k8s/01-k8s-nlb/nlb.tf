@@ -1,5 +1,5 @@
 resource "aws_lb_target_group" "k8s" {
-  name     = "k8s-tg"
+  name     = "k8s"
   port     = 6443
   protocol = "TCP"
   vpc_id   = "vpc-0d3a50be006d42f8e"
@@ -12,18 +12,8 @@ resource "aws_lb_target_group" "k8s" {
   }
 }
 
-resource "aws_lb_listener" "k8s_listener" {
-  load_balancer_arn = aws_lb.k8s_lb.arn
-  port              = "443"
-  protocol          = "TCP"
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.k8s.arn
-  }
-}
-
 resource "aws_lb" "k8s" {
-  name               = "k8s-lb"
+  name               = "k8s"
   internal           = false
   load_balancer_type = "network"
   security_groups    = ["sg-01dc33cd3198b94bd"]
@@ -32,5 +22,15 @@ resource "aws_lb" "k8s" {
   tags = {
     Name = "k8s_lb"
     env  = "dev"
+  }
+}
+
+resource "aws_lb_listener" "k8s_listener" {
+  load_balancer_arn = aws_lb.k8s.arn
+  port              = "443"
+  protocol          = "TCP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.k8s.arn
   }
 }

@@ -14,4 +14,6 @@ resource "aws_instance" "control-plane" {
     createdby    = "terraform"
     env          = "dev"
   }
+
+  depends_on = [ aws_lb.k8s ]
 }
