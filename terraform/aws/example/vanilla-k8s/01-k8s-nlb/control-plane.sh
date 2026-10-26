@@ -94,6 +94,7 @@ checkControlPlaneName() {
         echo "-------------------------------------------"
         controlPlaneEndPointNLB
         kubeConfigFileCopy
+        ciliumInstallation
     else
         echo "--------------------------------------------------"
         echo "This is $INSTANCE_NAME this node will join cluster"
@@ -147,8 +148,6 @@ fetchClusterJoiningCommand() {
     echo "-------------------------"
 }
 
-
-
 kubeConfigFileCopy() {
     echo "---------------------"
     echo "Copy kubeconfig files"
@@ -182,4 +181,3 @@ awsCliInstallation
 containerRuntimeInstallation
 kubernetesPackagesInstallation
 checkControlPlaneName
-ciliumInstallation
