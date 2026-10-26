@@ -101,7 +101,7 @@ fetchJoiningCommandAndJoin() {
 
 setVariables
 installRequiredPackages
-installRequiredPackages
+awsCliInstallation
 addRepositories
 installContainerRuntime
 kubernetesPackagesInstallation
