@@ -105,3 +105,4 @@ installRequiredPackages
 addRepositories
 installContainerRuntime
 kubernetesPackagesInstallation
+fetchJoiningCommandAndJoin
