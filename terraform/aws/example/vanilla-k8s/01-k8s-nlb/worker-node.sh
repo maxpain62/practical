@@ -89,8 +89,9 @@ kubernetesPackagesInstallation() {
 
 fetchJoiningCommandAndJoin() {
     echo "-------------------------------------------------------------"
-    echo "fetch cluster joining command and join cluster as worker node"
+    echo "Fetch cluster joining command and join cluster as worker node"
     echo "-------------------------------------------------------------"
+    sleep 210s
     CLUSTER_JOINING_COMMAND_WORKER_NODE=$(aws ssm get-parameter --name "CLUSTER_JOINING_COMMAND_WORKER_NODE" --region $AWS_REGION --query "Parameter.Value" --output text)
     $CLUSTER_JOINING_COMMAND_WORKER_NODE
     echo "-----------------------------"
