@@ -92,7 +92,8 @@ checkControlPlaneName() {
         controlPlaneEndPointNLB
         kubeConfigFileCopy
     else
-        echo "if not controlplane-0 then this block will execute"
+        fetchClusterJoiningCommand
+        kubeConfigFileCopy
     fi
 }
 
@@ -108,12 +109,31 @@ controlPlaneEndPointNLB() {
         CONTROL_PLANE_ENDPOINT=$(aws elbv2 describe-load-balancers --region $AWS_REGION --names "k8s" --query "LoadBalancers[0].DNSName" --output text)
         sleep 60s
         sudo kubeadm init --control-plane-endpoint "$CONTROL_PLANE_ENDPOINT:6443" --upload-certs
+
+        #Generate cluster joining command
+        CLUSTER_JOINING_COMMAND=$(kubeadm token create --print-join-command --certificate-key $(kubeadm init phase upload-certs --upload-certs | tail -n 1))
+        #upload cluster joining command to ssm parameter store
+        aws ssm put-parameter --name "CLUSTER_JOINING_COMMAND" --type "String" --value "$CLUSTER_JOINING_COMMAND" --overwrite --region $AWS_REGION
         sleep 60s
     fi
     echo "-----------------------------------------"
     echo "Initialization of control plane completed"
     echo "-----------------------------------------"
+    sleep 30s
 }
+
+fetchClusterJoiningCommand() {
+    echo "----------------------------------------------"
+    echo "fetch cluster joining command and join cluster"
+    echo "----------------------------------------------"
+    FETCH_CLUSTER_JOINING_COMMAND=$(aws ssm get-parameter --name "CLUSTER_JOINING_COMMAND" --region $AWS_REGION --query "Parameter.Value" --output text)
+    $FETCH_CLUSTER_JOINING_COMMAND
+    echo "-------------------------"
+    echo "cluster joining completed"
+    echo "-------------------------"
+}
+
+
 
 kubeConfigFileCopy() {
     echo "---------------------"
@@ -139,6 +159,8 @@ ciliumInstallation() {
     rm cilium-linux-${CLI_ARCH}.tar.gz{,.sha256sum}
     cilium install 1.20.1
 }
+
+
 
 setVariables
 installRequiredPackages
