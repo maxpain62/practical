@@ -101,11 +101,11 @@ controlPlaneEndPointNLB() {
     echo "fetch NLB dns for control plane endpoint and Initialize the control plane"
     echo "-------------------------------------------------------------------------"
     NLB_STATE=$(aws elbv2 describe-load-balancers --region $AWS_REGION --names "k8s" --query "LoadBalancers[0].State.Code" --output text)
-    TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --region ap-south-1 --names "k8s" --query "TargetGroups[0].TargetGroupArn" --output text)
+    TARGET_GROUP_ARN=$(aws elbv2 describe-target-groups --region $AWS_REGION --names "k8s" --query "TargetGroups[0].TargetGroupArn" --output text)
     # register targets to k8s target group
-    aws elbv2 register-targets --target-group-arn $TARGET_GROUP_ARN --targets Id=$INSTANCE_ID
+    aws elbv2 register-targets --target-group-arn $TARGET_GROUP_ARN --targets Id=$INSTANCE_ID --region $AWS_REGION
     if [ "$NLB_STATE" == "active" ]; then
-        CONTROL_PLANE_ENDPOINT=$(aws elbv2 describe-load-balancers --region ap-south-1 --names "k8s" --query "LoadBalancers[0].DNSName" --output text)
+        CONTROL_PLANE_ENDPOINT=$(aws elbv2 describe-load-balancers --region $AWS_REGION --names "k8s" --query "LoadBalancers[0].DNSName" --output text)
         sleep 60s
         sudo kubeadm init --control-plane-endpoint "$CONTROL_PLANE_ENDPOINT:6443" --upload-certs
         sleep 60s
