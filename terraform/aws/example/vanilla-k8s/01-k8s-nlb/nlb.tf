@@ -27,7 +27,7 @@ resource "aws_lb" "k8s" {
 
 resource "aws_lb_listener" "k8s_listener" {
   load_balancer_arn = aws_lb.k8s.arn
-  port              = "443"
+  port              = "6443"
   protocol          = "TCP"
   default_action {
     type             = "forward"
