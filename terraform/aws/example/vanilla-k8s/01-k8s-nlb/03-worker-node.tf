@@ -9,6 +9,9 @@ resource "aws_launch_template" "node_lt" {
   }
 
   user_data = filebase64("${path.module}/worker-node.sh")
+  iam_instance_profile {
+    name = "adminrole"
+  }
   
   tag_specifications {
     resource_type = "instance"
