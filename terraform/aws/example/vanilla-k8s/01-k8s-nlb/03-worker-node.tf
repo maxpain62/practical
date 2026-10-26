@@ -8,7 +8,7 @@ resource "aws_launch_template" "node_lt" {
     market_type = "spot"
   }
 
-  user_data = filebase64("${path.module}/worker-node-base64.sh")
+  user_data = filebase64("${path.module}/worker-node-base64")
   
   tag_specifications {
     resource_type = "instance"
