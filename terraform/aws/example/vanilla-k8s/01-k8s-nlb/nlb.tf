@@ -1,4 +1,4 @@
-resource "aws_lb_target_group" "k8s_tg" {
+resource "aws_lb_target_group" "k8s" {
   name     = "k8s-tg"
   port     = 6443
   protocol = "TCP"
@@ -18,11 +18,11 @@ resource "aws_lb_listener" "k8s_listener" {
   protocol          = "TCP"
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.k8s_tg.arn
+    target_group_arn = aws_lb_target_group.k8s.arn
   }
 }
 
-resource "aws_lb" "k8s_lb" {
+resource "aws_lb" "k8s" {
   name               = "k8s-lb"
   internal           = false
   load_balancer_type = "network"
