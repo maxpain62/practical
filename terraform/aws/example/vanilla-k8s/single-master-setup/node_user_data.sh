@@ -79,6 +79,7 @@ kubernetesPackagesInstallation() {
 }
 
 joinCluster() {
+    sleep 120s
     echo "--------------------------------------------------"
     echo "Fetch cluster joining command and join the cluster"
     echo "--------------------------------------------------"
