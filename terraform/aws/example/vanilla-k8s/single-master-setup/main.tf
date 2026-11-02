@@ -108,7 +108,7 @@ resource "aws_launch_template" "node_lt" {
       created_by   = "terraform"
     }
   }
-  depends_on = [aws_instance.kubernetes_master]
+  depends_on = [aws_instance.controlplane]
 }
 
 
@@ -126,5 +126,5 @@ resource "aws_autoscaling_group" "node_asg" {
 
 
 output "public_ip" {
-  value = aws_instance.kubernetes_master.public_ip
+  value = aws_instance.controlplane.public_ip
 }
