@@ -78,13 +78,13 @@ kubernetesPackagesInstallation() {
 
     #creating kubeadm-config.yaml and performing kubeadm init with kubeadm-config.yaml
     cat << EOF > kubeadm-config.yaml
-    # kubeadm-config.yaml
+    # kubeadm-config.yaml    
+    apiVersion: kubeadm.k8s.io/v1beta3
     kind: ClusterConfiguration
-    apiVersion: kubeadm.k8s.io/v1beta4
     kubernetesVersion: v1.35.0
     ---
-    kind: KubeletConfiguration
     apiVersion: kubelet.config.k8s.io/v1beta1
+    kind: KubeletConfiguration
     cgroupDriver: systemd
 EOF
     kubeadm init --config kubeadm-config.yaml
