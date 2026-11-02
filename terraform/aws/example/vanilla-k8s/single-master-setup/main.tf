@@ -27,11 +27,12 @@ resource "aws_security_group" "kubernetes_sg" {
 
 
 resource "aws_instance" "controlplane" {
-  instance_type   = "t3.medium"
-  security_groups = [aws_security_group.kubernetes_sg.name]
-  key_name        = "dpp-key"
-  ami             = "ami-02d26659fd82cf299"
-  user_data       = file("user_data.sh")
+  instance_type        = "t3.medium"
+  security_groups      = [aws_security_group.kubernetes_sg.name]
+  key_name             = "dpp-key"
+  ami                  = "ami-02d26659fd82cf299"
+  user_data            = file("user_data.sh")
+  iam_instance_profile = "adminrole"
 
   tags = {
     Name         = "controlplane"
