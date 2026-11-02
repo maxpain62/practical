@@ -34,6 +34,18 @@ resource "aws_instance" "controlplane" {
   user_data            = file("user_data.sh")
   iam_instance_profile = "adminrole"
 
+  root_block_device {
+    volume_size = 20
+    volume_type = "gp3"
+
+    tags = {
+      Name       = "controlplane-root-volume"
+      env        = "dev"
+      app        = "kubernetes"
+      created_by = "terraform"
+    }
+  }
+
   tags = {
     Name         = "controlplane"
     env          = "dev"
@@ -44,9 +56,20 @@ resource "aws_instance" "controlplane" {
 }
 
 
+data aws_ami "ubuntu" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd-gp3/ubuntu-noble-24.04-amd64-server*"]
+  }
+}
+
+
 resource "aws_launch_template" "node_lt" {
   name                 = "node_lt"
-  image_id             = "ami-02d26659fd82cf299"
+  image_id             = data.aws_ami.ubuntu.id
   instance_type        = "t3.medium"
   key_name             = "dpp-key"
   security_group_names = ["launch-wizard-1"]
