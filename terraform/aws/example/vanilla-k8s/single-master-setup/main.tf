@@ -82,6 +82,9 @@ resource "aws_launch_template" "node_lt" {
   instance_type        = "t3.medium"
   key_name             = "dpp-key"
   security_group_names = ["launch-wizard-1"]
+  iam_instance_profile {
+    name = "adminrole"
+  }
 
   instance_market_options {
     market_type = "spot"
