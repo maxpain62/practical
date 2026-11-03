@@ -93,13 +93,13 @@ resource "aws_launch_template" "node_lt" {
   image_id             = data.aws_ami.ubuntu.id
   instance_type        = "t3.medium"
   key_name             = "dpp-key"
-  security_group_names = ["launch-wizard-1"]
   iam_instance_profile {
     name = "adminrole"
   }
 
   network_interfaces {
     associate_public_ip_address = false
+    security_groups = ["launch-wizard-1"]
   }
   
 
