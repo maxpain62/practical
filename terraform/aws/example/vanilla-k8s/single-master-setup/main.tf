@@ -55,6 +55,10 @@ resource "aws_instance" "controlplane" {
     source = "/home/ubuntu/.ssh/id_rsa"
   }
 
+  provisioner "local-exec" {
+    command ="chmod 600 /home/ubuntu/.ssh/id_rsa"
+  }
+
   root_block_device {
     volume_size = 20
     volume_type = "gp3"
