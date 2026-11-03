@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     aws = {
-        version = "~>6.0"
-        source = "hashicorp/aws"
+      version = "~>6.0"
+      source  = "hashicorp/aws"
     }
   }
 }
@@ -12,15 +12,26 @@ provider "aws" {
 }
 
 resource "aws_instance" "simple_ec2" {
-  instance_type = "t3a.medium"
-  ami = "ami-02d26659fd82cf299"
-  security_groups = ["launch-wizard-1"]
-  key_name = "dpp-key"
+  instance_type        = "t3.small"
+  ami                  = "ami-02d26659fd82cf299"
+  security_groups      = ["launch-wizard-1"]
+  key_name             = "dpp-key"
   iam_instance_profile = "adminrole"
-  user_data = file("terraform_installation.sh")
+  user_data            = file("terraform_installation.sh")
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("./dpp-key.pem")
+    host        = self.public_ip
+  }
+  provisioner "file" {
+    source      = "./dpp-key.pem"
+    destination = "/home/ubuntu/.ssh/id_rsa"
+  }
+
   tags = {
     Name = "simple_ec2"
-    env = "dev"
+    env  = "dev"
   }
 }
 

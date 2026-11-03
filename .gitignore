@@ -47,3 +47,7 @@ terraform.rc
 
 # End of https://www.toptal.com/developers/gitignore/api/helm
 # End of https://www.toptal.com/developers/gitignore/api/terraform
+
+
+.ppk
+.pem
