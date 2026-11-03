@@ -110,7 +110,6 @@ fileCopyAndHostnameSetup() {
     echo "--------------------------------------------"
     echo "copying kubeconfig file and setting hostname"
     echo "--------------------------------------------"
-    hostnamectl set-hostname master
     mkdir -p /root/.kube
     sudo cp -i /etc/kubernetes/admin.conf /root/.kube/config
     sudo chown 0:0 /root/.kube/config
