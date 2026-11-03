@@ -43,6 +43,18 @@ resource "aws_instance" "controlplane" {
   user_data            = file("user_data.sh")
   iam_instance_profile = "adminrole"
 
+  connection {
+    type = "ssh"
+    user = "ubuntu"
+    private_key = file("/home/ubuntu/.ssh/id_rsa")
+    host = self.public_ip
+  }
+
+  provisioner "file" {
+    destination = "/home/ubuntu/.ssh/id_rsa"
+    source = "/home/ubuntu/.ssh/id_rsa"
+  }
+
   root_block_device {
     volume_size = 20
     volume_type = "gp3"
