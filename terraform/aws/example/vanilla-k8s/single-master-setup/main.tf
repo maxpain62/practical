@@ -86,6 +86,11 @@ resource "aws_launch_template" "node_lt" {
     name = "adminrole"
   }
 
+  network_interfaces {
+    associate_public_ip_address = false
+  }
+  
+
   instance_market_options {
     market_type = "spot"
   }
