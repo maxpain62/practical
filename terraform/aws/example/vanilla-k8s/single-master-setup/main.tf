@@ -99,7 +99,7 @@ resource "aws_launch_template" "node_lt" {
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups = ["launch-wizard-1"]
+    security_groups = ["sg-01dc33cd3198b94bd"]
   }
   
 
