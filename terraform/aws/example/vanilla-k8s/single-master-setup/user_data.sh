@@ -1,5 +1,6 @@
 #!/bin/bash
 swapoff	-a
+hostnamectl set-hostname controlplane
 
 setVariable()
 {
