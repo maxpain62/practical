@@ -1,5 +1,6 @@
 #!/bin/bash
 #user data script from terraform, aws cli and kubectl installation
+hostnamectl set-hostname bastion
 
 #terraform installation starts here
 apt-get update && apt-get install -y gnupg software-properties-common python3.12-venv unzip
